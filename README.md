@@ -7,22 +7,22 @@ Place the data file for each subject (e.g. S1, S2, ...) into the
 input_data folder.
 The data structure is as follows
 input_data  
-    ├── S1  
-    │ ├── dwi.nii.gz  
-    │ ├── bval  
-    │ ├── bvec  
-    │ ├── rev_b0.nii.gz (optional)  
-    │ ├── aparc+aseg.nii.gz (optional)  
-    │ ├── wmparc.nii.gz (optional)  
-    │ └── t1.nii.gz  
-    └── S2  
-      ├── dwi.nii.gz  
-      ├── bval  
-      ├── bvec  
-      ├── rev_b0.nii.gz (optional)  
-      ├── aparc+aseg.nii.gz (optional)  
-      ├── wmparc.nii.gz (optional)  
-      └── t1.nii.gz  
+        ├── S1  
+        │ ├── dwi.nii.gz  
+        │ ├── bval  
+        │ ├── bvec  
+        │ ├── rev_b0.nii.gz (optional)  
+        │ ├── aparc+aseg.nii.gz (optional)  
+        │ ├── wmparc.nii.gz (optional)  
+        │ └── t1.nii.gz  
+        └── S2  
+          ├── dwi.nii.gz  
+          ├── bval  
+          ├── bvec  
+          ├── rev_b0.nii.gz (optional)  
+          ├── aparc+aseg.nii.gz (optional)  
+          ├── wmparc.nii.gz (optional)  
+          └── t1.nii.gz  
 
 dwi.nii.gz : DWI image file  
 bval, bvec : b-value and b-vector files. b-vector must be of unit length.  
