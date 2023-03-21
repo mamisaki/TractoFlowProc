@@ -34,7 +34,7 @@ wmparc.nii.gz (optional) : FreeSurfer wmparc image file.
 ## 2. Run FreeSurfer (optional)
 ```
 cd ~/TractFlowProc
-./run_FreeSurfer ~/TractFlow_workspace/input_data
+nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input_data > nohup_FS.out &
 ```
 The processed files are stored in the folder ~/TractFlowProc/workspace/freesurfer (parent directory of input_data).
 
