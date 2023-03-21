@@ -42,7 +42,8 @@ if __name__ == '__main__':
     fully_reproducible = args.fully_reproducible
     ABS = args.ABS
     copy_local = args.copy_local
-    workplace = Path(args.workplace).resolve()
+    if copy_local and args.workplace is not None:
+        workplace = Path(args.workplace).resolve()
     with_docker = args.with_docker
     overwrite = args.overwrite
 
@@ -71,20 +72,20 @@ if __name__ == '__main__':
         wd = workplace
 
     # --- Run TractFlow -------------------------------------------------------
-    cmd = "nextflow run -bg tractoflow -r 2.4.1 --input {input_folder}"
+    cmd = f"nextflow run -bg tractoflow -r 2.4.1 --input {input_folder}"
     profile = ['cbrain']
     if use_cuda:
         profile.apprnd('use_cuda')
-    
+
     if fully_reproducible:
         profile.apprnd('fully_reproducible')
     
     if ABS:
         profile.apprnd('ABS')
-    
+
     if len(profile):
         cmd += f" -profile {','.join(profile)}"
-    
+
     if with_docker:
         cmd += ' -with-docker scilus/scilus:1.4.2'
     cmd += ' -resume'
