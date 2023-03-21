@@ -7,15 +7,15 @@ Place the data file for each subject (e.g. S1, S2, ...) into the
 input_data folder.
 The data structure is as follows
 input_data  
-        ├── S1  
-        │ ├── dwi.nii.gz  
-        │ ├── bval  
-        │ ├── bvec  
-        │ ├── rev_b0.nii.gz (optional)  
-        │ ├── aparc+aseg.nii.gz (optional)  
-        │ ├── wmparc.nii.gz (optional)  
-        │ └── t1.nii.gz  
-        └── S2  
+&nbsp;&nbsp;├── S1  
+&nbsp;&nbsp;│ ├── dwi.nii.gz  
+&nbsp;&nbsp;│ ├── bval  
+&nbsp;&nbsp;│ ├── bvec  
+&nbsp;&nbsp;│ ├── rev_b0.nii.gz (optional)  
+&nbsp;&nbsp;│ ├── aparc+aseg.nii.gz (optional)  
+&nbsp;&nbsp;│ ├── wmparc.nii.gz (optional)  
+&nbsp;&nbsp;│ └── t1.nii.gz  
+&nbsp;&nbsp;└── S2  
           ├── dwi.nii.gz  
           ├── bval  
           ├── bvec  
