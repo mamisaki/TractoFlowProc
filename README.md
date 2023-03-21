@@ -48,14 +48,14 @@ You can skip this process if you are not using TractoFlow-ABS.
 https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
 ```
 cd ~/TractFlowProc
-./run_FreeSurfer ~/TractFlow_workspace/input_data --with_docker
+nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible > nohup_tf.out &
 ```
 
 * If the workspace is on a network share, the trac_flow pipeline will fail (possibly due to a symlink creation error).
 Then add the `-copy_local' option to the run_FreeSurfer command, for example
 ```
-./run_TractFlow ~/TractFlow_workspace/input_data --with_docker \
-    --copy_local --workspace ~/TractFlowWork
+nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible \
+    --copy_local --workspace ~/TractFlowWork > nohup_tf.out &
 ```
 In this example, the --copy_local option causes the input_data folder to be copied to ~/TractFlowWork/, which is specified by the --workspace option, and when the process is finished, the results and work folders are copied back to the workspace (parent directory of input_data).
 
