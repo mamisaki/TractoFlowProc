@@ -75,13 +75,13 @@ if __name__ == '__main__':
     cmd = f"nextflow run -bg tractoflow -r 2.4.1 --input {input_folder}"
     profile = ['cbrain']
     if use_cuda:
-        profile.apprnd('use_cuda')
+        profile.append('use_cuda')
 
     if fully_reproducible:
-        profile.apprnd('fully_reproducible')
+        profile.append('fully_reproducible')
     
     if ABS:
-        profile.apprnd('ABS')
+        profile.append('ABS')
 
     if len(profile):
         cmd += f" -profile {','.join(profile)}"
