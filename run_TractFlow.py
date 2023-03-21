@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     # --- Run TractFlow -------------------------------------------------------
     cmd = "nextflow run -bg tractoflow -r 2.4.1 --input {input_folder}"
-    profile = []
+    profile = ['cbrain']
     if use_cuda:
         profile.apprnd('use_cuda')
     
