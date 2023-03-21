@@ -54,7 +54,7 @@ Then add the `-copy_local' option to the run_FreeSurfer command, for example
 ./run_TractFlow ~/TracFlow_workspace/input_data --with_docker \
     --copy_local --workspace ~/TractFlowWork
 ```
-In this example, the --copy_local option causes the input_data folder to be copied to ~/TractFlowWork/, which is specified by the --workspace option, and when the process is finished, the results and work folders are copied back to the workspace. (parent directory of input_data).
+In this example, the --copy_local option causes the input_data folder to be copied to ~/TractFlowWork/, which is specified by the --workspace option, and when the process is finished, the results and work folders are copied back to the workspace (parent directory of input_data).
 
 This will take a very long time.
 ~/TractFlowWork can be removed after the process.
