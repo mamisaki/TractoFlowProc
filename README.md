@@ -38,7 +38,7 @@ cd ~/TractFlowProc
 nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input_data > nohup_FS.out &
 ```
 The process will take a very long time to complete.  
-The files processed by Freesurfer are stored in the folder ~/TractFlowProc/workspace/freesurfer (parent folder of input_data).  
+The files processed by Freesurfer are stored in the folder ~/TractFlow_workspace/freesurfer (parent folder of input_data).  
 Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input_data folder.  
 
 TractoFlow-ABS must be used for pathological data.  
@@ -50,9 +50,9 @@ https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
 cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible > nohup_tf.out &
 ```
+The command will return immediately, but the process will run in the background.
 
-* If the workspace is on a network share, the trac_flow pipeline will fail (possibly due to a symlink creation error).
-Then add the `-copy_local' option to the run_FreeSurfer command, for example
+* If the workspace is on a network share, the trac_flow pipeline will fail. Then add the `-copy_local' option to the run_FreeSurfer command, for example,
 ```
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible \
     --copy_local --workspace ~/TractFlowWork > nohup_tf.out &
