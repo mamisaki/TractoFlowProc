@@ -32,14 +32,17 @@ aparc+aseg.nii.gz (optional) : FreeSurfer aparc+aseg image file.
 wmparc.nii.gz (optional) : FreeSurfer wmparc image file.
 
 ## 2. Run FreeSurfer (optional)
+If you are using TractoFlow-ABS (Atlas Based Segmentation), you will need aparc+aseg.nii.gz and wmparc.nii.gz, which are created by FreeSurfer and resampled to the same space as t1.nii.gz. The script run_FreeSurfer.py processes t1.nii.gz in the input_data folder to create aparc+aseg.nii.gz and wmparc.nii.gz.
 ```
 cd ~/TractFlowProc
 nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input_data > nohup_FS.out &
 ```
-The processed files are stored in the folder ~/TractFlowProc/workspace/freesurfer (parent directory of input_data).
+The process will take a very long time to complete.  
+The files processed by Freesurfer are stored in the folder ~/TractFlowProc/workspace/freesurfer (parent folder of input_data).  
+Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input_data folder.  
 
-It will take a very long time to finish the process.
-The aparc+aseg.nii.gz and wmparc.nii.gz of each subject are copied to the input_data folder.
+TractoFlow-ABS must be used for pathological data.  
+You can skip this process if you are not using TractoFlow-ABS.  
 
 ## 3. Run the TractoFlow pipeline
 https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
