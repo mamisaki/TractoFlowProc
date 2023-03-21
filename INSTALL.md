@@ -45,5 +45,6 @@ docker pull scilus/scilus:1.4.2
 
 ## Install TractFlowProc scripts
 ```
+cd
 git clone https://github.com/mmisaki/TractFlowProc
 ```
