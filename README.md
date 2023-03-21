@@ -5,24 +5,25 @@ See the INSTALL file to set up the tools. It is assumed that the TractFlowProc s
 Create an input data folder (e.g. ~/TractFlow_workspace/input_data).
 Place the data file for each subject (e.g. S1, S2, ...) into the
 input_data folder.
-The data structure is as follows
+The data structure is as follows  
+
 input_data  
 &nbsp;&nbsp;├── S1  
-&nbsp;&nbsp;│ ├── dwi.nii.gz  
-&nbsp;&nbsp;│ ├── bval  
-&nbsp;&nbsp;│ ├── bvec  
-&nbsp;&nbsp;│ ├── rev_b0.nii.gz (optional)  
-&nbsp;&nbsp;│ ├── aparc+aseg.nii.gz (optional)  
-&nbsp;&nbsp;│ ├── wmparc.nii.gz (optional)  
-&nbsp;&nbsp;│ └── t1.nii.gz  
+&nbsp;&nbsp;│├── dwi.nii.gz  
+&nbsp;&nbsp;│├── bval  
+&nbsp;&nbsp;│├── bvec  
+&nbsp;&nbsp;│├── rev_b0.nii.gz (optional)  
+&nbsp;&nbsp;│├── aparc+aseg.nii.gz (optional)  
+&nbsp;&nbsp;│├── wmparc.nii.gz (optional)  
+&nbsp;&nbsp;│└── t1.nii.gz  
 &nbsp;&nbsp;└── S2  
-          ├── dwi.nii.gz  
-          ├── bval  
-          ├── bvec  
-          ├── rev_b0.nii.gz (optional)  
-          ├── aparc+aseg.nii.gz (optional)  
-          ├── wmparc.nii.gz (optional)  
-          └── t1.nii.gz  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── dwi.nii.gz  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── bval  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── bvec  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── rev_b0.nii.gz (optional)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── aparc+aseg.nii.gz (optional)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── wmparc.nii.gz (optional)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── t1.nii.gz  
 
 dwi.nii.gz : DWI image file  
 bval, bvec : b-value and b-vector files. b-vector must be of unit length.  
@@ -34,9 +35,9 @@ wmparc.nii.gz (optional) : FreeSurfer wmparc image file.
 ## 2. Run FreeSurfer (optional)
 ```
 cd ~/TractFlowProc
-./run_FreeSurfer ~/TractFlow_workspace/input_data
+nohup ./run_FreeSurfer ~/TractFlow_workspace/input_data > nohup_FS.out &
 ```
-The processed files are stored in the folder ~/TractFlowProc/workspace/freesurfer (parent directory of input_data).
+The process runs in the background. The processed files are stored in the folder ~/TractFlowProc/workspace/freesurfer (parent directory of input_data).  
 
 It will take a very long time to finish the process.
 The aparc+aseg.nii.gz and wmparc.nii.gz of each subject are copied to the input_data folder.
@@ -45,7 +46,7 @@ The aparc+aseg.nii.gz and wmparc.nii.gz of each subject are copied to the input_
 https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
 ```
 cd ~/TractFlowProc
-./run_FreeSurfer ~/TractFlow_workspace/input_data --with_docker
+nohup ./run_FreeSurfer ~/TractFlow_workspace/input_data --with_docker
 ```
 
 * If the workspace is on a network share, the trac_flow pipeline will fail (possibly due to a symlink creation error).
