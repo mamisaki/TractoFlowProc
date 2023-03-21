@@ -6,27 +6,28 @@ Create an input data folder (e.g. ~/TracFlowProc/workspace/input_data).
 Place the data file for each subject (e.g. S1, S2, ...) into the
 input_data folder.
 The data structure is as follows
-input_data
-    ├── S1
-    │ ├── dwi.nii.gz
-    │ ├── bval
-    │ ├── bvec
-    │ ├── rev_b0.nii.gz (optional)
-    │ ├── aparc+aseg.nii.gz (optional)
-    │ ├── wmparc.nii.gz (optional)
-    │ └── t1.nii.gz
-    └── S2
-        ├── dwi.nii.gz
-        ├── bval
-        ├── bvec
-        ├── rev_b0.nii.gz (optional)
-        ├── aparc+aseg.nii.gz (optional)
-        ├── wmparc.nii.gz (optional)
-        └── t1.nii.gz
+input_data  
+    ├── S1  
+    │ ├── dwi.nii.gz  
+    │ ├── bval  
+    │ ├── bvec  
+    │ ├── rev_b0.nii.gz (optional)  
+    │ ├── aparc+aseg.nii.gz (optional)  
+    │ ├── wmparc.nii.gz (optional)  
+    │ └── t1.nii.gz  
+    └── S2  
+        ├── dwi.nii.gz  
+        ├── bval  
+        ├── bvec  
+        ├── rev_b0.nii.gz (optional)  
+        ├── aparc+aseg.nii.gz (optional)  
+        ├── wmparc.nii.gz (optional)  
+        └── t1.nii.gz  
 
-dwi.nii.gz : DWI image file
-bval, bvec : b-value and b-vector files. b-vector must be of unit length.
-t1.nii.gz : T1 anatomical image file.
+
+dwi.nii.gz : DWI image file  
+bval, bvec : b-value and b-vector files. b-vector must be of unit length.  
+t1.nii.gz : T1 anatomical image file.  
 rev_b0.nii.gz (optional) : Reverse phase encoding of b0 DWI images.
 aparc+aseg.nii.gz (optional) : FreeSurfer aparc+aseg image file.
 wmparc.nii.gz (optional) : FreeSurfer wmparc image file.
