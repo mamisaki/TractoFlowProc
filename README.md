@@ -37,7 +37,7 @@ If you are using TractoFlow-ABS (Atlas Based Segmentation), you will need aparc+
 cd ~/TractFlowProc
 nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input_data > nohup_FS.out &
 ```
-The process will take a very long time to complete.  
+The process will take a very long time (a day or more) to complete.  
 The files processed by Freesurfer are stored in the folder ~/TractFlow_workspace/freesurfer (parent folder of input_data).  
 Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input_data folder.  
 
@@ -51,16 +51,19 @@ cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible > nohup_tf.out &
 ```
 The command will return immediately, but the process will run in the background.
+The process will take a very long time (a day or more) to complete.  
+
+* Add '--ABS' option to run TractoFlow-ABS (See 2.).  
 
 * If the workspace is on a network share, the trac_flow pipeline will fail. Then add the `-copy_local' option to the run_FreeSurfer command, for example,
 ```
+cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible \
-    --copy_local --workspace ~/TractFlowWork > nohup_tf.out &
+    --copy_local --workspace ~/TractFlowWork_local > nohup_tf.out &
 ```
 In this example, the --copy_local option causes the input_data folder to be copied to ~/TractFlowWork/, which is specified by the --workspace option, and when the process is finished, the results and work folders are copied back to the workspace (parent directory of input_data).
 
-This will take a very long time.
-~/TractFlowWork can be removed after the process.
+~/TractFlowWork_local can be removed after the process.
 
 ## 4. Run the freewater_flow pipeline
 https://github.com/scilus/freewater_flow
