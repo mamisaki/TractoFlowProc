@@ -43,7 +43,7 @@ git clone https://github.com/scilus/freewater_flow
 docker pull scilus/scilus:1.4.2
 ```
 
-# Install TractFlowProc scripts
+## Install TractFlowProc scripts
 ```
 git clone https://github.com/mmisaki/TractFlowProc
 ```
