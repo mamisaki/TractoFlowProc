@@ -33,6 +33,7 @@ pip install -e .
 cd ~/bin
 wget https://github.com/nextflow-io/nextflow/releases/download/v21.10.6/nextflow && chmod +x nextflow
 rm -rf ~/.nextflow
+sudo apt install default-jre
 ```
 
 ## Download TractoFlow and freewater_flow
