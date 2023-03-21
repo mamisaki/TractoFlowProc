@@ -17,3 +17,4 @@ workspace/*
 swarmlog/*
 nohup.out
 pull_data_RNTDecoding.py
+launch.json

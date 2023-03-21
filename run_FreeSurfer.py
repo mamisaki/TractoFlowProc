@@ -14,7 +14,7 @@ from mproc import run_multi_shell
 
 
 # %% run_reconall =============================================================
-def run_reconall(input_folder, FS_SUBJ_DIR, overwrite=False):
+def run_reconall(input_folder, FS_SUBJ_DIR):
     """
     Run FreeSurfer recon-all to create aparc+aseg and wmparc
     """
@@ -34,7 +34,7 @@ def run_reconall(input_folder, FS_SUBJ_DIR, overwrite=False):
 
         aseg_f = dst_root / 'mri' / 'aparc+aseg.mgz'
         wmparc_f = dst_root / 'mri' / 'wmparc.mgz'
-        if aseg_f.is_file() and wmparc_f.is_file and not overwrite:
+        if aseg_f.is_file() and wmparc_f.is_file():
             continue
 
         IsRun = dst_root / 'scripts' / 'IsRunning.lh+rh'
@@ -77,6 +77,9 @@ def copy_aparc_wmparc(input_folder, FS_SUBJ_DIR, overwrite=False):
     for subjid in SUBJIDS:
         dst_dir = input_folder / subjid
         subjdir = FS_SUBJ_DIR / subjid
+        t1_f = dst_dir / 't1.nii.gz'
+        if not t1_f.is_file():
+            continue
         
         aseg_f = dst_dir / 'aparc+aseg.nii.gz'
         if not aseg_f.is_file() or overwrite:
@@ -84,12 +87,20 @@ def copy_aparc_wmparc(input_folder, FS_SUBJ_DIR, overwrite=False):
             if aseg_src_f.is_file():
                 cmd = f'mri_convert {aseg_src_f} {aseg_f}'
                 subprocess.check_call(shlex.split(cmd))
+                
+                cmd = f"3dresample -overwrite -master {t1_f} -input {aseg_f}"
+                cmd += f" -prefix {aseg_f} -rmode NN"
+                subprocess.check_call(shlex.split(cmd))
 
         wmparc_f = dst_dir / 'wmparc.nii.gz'
         if not wmparc_f.is_file() or overwrite:
             wmparc_src_f = subjdir / 'mri' / 'wmparc.mgz'
             if wmparc_src_f.is_file():
                 cmd = f'mri_convert {wmparc_src_f} {wmparc_f}'
+                subprocess.check_call(shlex.split(cmd))
+                
+                cmd = f"3dresample -overwrite -master {t1_f} -input {wmparc_f}"
+                cmd += f" -prefix {wmparc_f} -rmode NN"
                 subprocess.check_call(shlex.split(cmd))
 
 
@@ -113,7 +124,7 @@ if __name__ == '__main__':
     overwrite = args.overwrite
 
     # Run recon-all
-    run_reconall(input_folder, FS_SUBJ_DIR, overwrite=overwrite)
+    run_reconall(input_folder, FS_SUBJ_DIR)
     
     # Copy aparc+aseg and wmparc to TractFlow input_folder
     copy_aparc_wmparc(input_folder, FS_SUBJ_DIR, overwrite=overwrite)

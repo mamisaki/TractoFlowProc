@@ -21,6 +21,12 @@ if __name__ == '__main__':
         description = 'Run TractFlow pipeline')
     
     parser.add_argument('input_folder', help='input folder')
+    parser.add_argument('--use_cuda', action='store_true',
+                        help='Use eddy_cuda for Eddy process')
+    parser.add_argument('--fully_reproducible', action='store_true',
+                        help='All the parameters will be set to have 100% reproducible')
+    parser.add_argument('--ABS', action='store_true',
+                        help='TractoFlow-ABS (Atlas Based Segmentation) is used.')
     parser.add_argument('--copy_local', action='store_true',
                         help='Copy local working place')
     parser.add_argument('--workplace', help='Local working place')
@@ -31,6 +37,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
     input_folder = Path(args.input_folder).resolve()
     assert input_folder.is_dir(), f"No directory at {input_folder}"
+    
+    use_cuda = args.use_cuda
+    fully_reproducible = args.fully_reproducible
+    ABS = args.ABS
     copy_local = args.copy_local
     workplace = Path(args.workplace).resolve()
     with_docker = args.with_docker
@@ -62,6 +72,19 @@ if __name__ == '__main__':
 
     # --- Run TractFlow -------------------------------------------------------
     cmd = "nextflow run -bg tractoflow -r 2.4.1 --input {input_folder}"
+    profile = []
+    if use_cuda:
+        profile.apprnd('use_cuda')
+    
+    if fully_reproducible:
+        profile.apprnd('fully_reproducible')
+    
+    if ABS:
+        profile.apprnd('ABS')
+    
+    if len(profile):
+        cmd += f" -profile {','.join(profile)}"
+    
     if with_docker:
         cmd += ' -with-docker scilus/scilus:1.4.2'
     cmd += ' -resume'
