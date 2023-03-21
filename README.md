@@ -68,16 +68,19 @@ In this example, the --copy_local option causes the input_data folder to be copi
 ## 4. Run the freewater_flow pipeline
 https://github.com/scilus/freewater_flow
 ```
+conda activate tractflow
 cd ~/TractFlowProc
-./run_FreewaterFlow ~/TractFlow_workspace/results
+nohup ./run_FreewaterFlow.py ~/TractFlow_workspace/results > nohup_fwf.out &
 ```
-The 'results' folder of run_TractFlow should be given as an argument. The input files for freewater_flow are copied to 'fwflow_input' in ~/TractFlowProc/workspace (parent directory of the results folder).
+The 'results' folder of the run_TractFlow.py should be given as an argument. The input files for freewater_flow are copied to 'fwflow_input' in ~/TractFlow_workspace (parent directory of the results folder).
 
 * The '--copy_local' option allows you to work in the local workspace specified by the '--workplace' option. The results files will be copied to the ~/TractFlow_workspace/results folder.
 ```
 # optional
+conda activate tractflow
 cd ~/TractFlowProc
-./run_FreewaterFlow ~/TractFlow_workspace/results \
-    --copy_local --workspace ~/FWlowWork
+nohup ./run_FreewaterFlow.py ~/TractFlow_workspace/results \
+    --copy_local --workspace ~/FWFlowWork_local
 ```
-~/FWlowWork can be removed after the process.
+~/FWFlowWork_local can be removed after the process.
+
