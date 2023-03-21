@@ -16,13 +16,13 @@ input_data
     │ ├── wmparc.nii.gz (optional)  
     │ └── t1.nii.gz  
     └── S2  
-        ├── dwi.nii.gz  
-        ├── bval  
-        ├── bvec  
-        ├── rev_b0.nii.gz (optional)  
-        ├── aparc+aseg.nii.gz (optional)  
-        ├── wmparc.nii.gz (optional)  
-        └── t1.nii.gz  
+      ├── dwi.nii.gz  
+      ├── bval  
+      ├── bvec  
+      ├── rev_b0.nii.gz (optional)  
+      ├── aparc+aseg.nii.gz (optional)  
+      ├── wmparc.nii.gz (optional)  
+      └── t1.nii.gz  
 
 
 dwi.nii.gz : DWI image file  
