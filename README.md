@@ -82,3 +82,7 @@ nohup ./run_FreewaterFlow.py ~/TractFlow_workspace/results \
 ```
 ~/FWFlowWork_local can be removed after the process.
 
+## 5. Result files
+Result files are saved in the ~/TractFlow_workspace/results/[subject] folders.  
+
+
