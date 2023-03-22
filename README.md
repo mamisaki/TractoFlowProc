@@ -51,7 +51,7 @@ cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible > nohup_tf.out &
 ```
 The command will return immediately, but the process will run in the background.
-The process will take a very long time (a day or more) to complete.  
+The process takes a very long time: > 10h for one subject. Multiple subjects are processed in parallel.
 
 * Add '--ABS' option to run TractoFlow-ABS (See 2.).  
 
