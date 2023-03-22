@@ -50,20 +50,18 @@ https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
 cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible > nohup_tf.out &
 ```
-The command will return immediately, but the process will run in the background.
+The command returns immediately, and the process runs in the background.  
 The process takes a very long time: > 10h for one subject. Multiple subjects are processed in parallel.
 
 * Add '--ABS' option to run TractoFlow-ABS (See 2.).  
 
-* If the workspace is on a network share, the trac_flow pipeline will fail. Then add the `-copy_local' option to the run_FreeSurfer command, for example,
+* If the workspace is on a network share, the trac_flow pipeline will fail. Then, add the `-copy_local' option to the run_FreeSurfer command, for example,
 ```
 cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible \
     --copy_local --workspace ~/TractFlowWork_local > nohup_tf.out &
 ```
-In this example, the --copy_local option causes the input_data folder to be copied to ~/TractFlowWork/, which is specified by the --workspace option, and when the process is finished, the results and work folders are copied back to the workspace.
-
-~/TractFlowWork_local can be removed after the process.
+In this example, the '--copy_local' option causes the input_data folder to be copied to ~/TractFlowWork/, which is specified by the '--workspace' option, and when the process is finished, the results and work folders are copied back to the workspace. ~/TractFlowWork_local can be removed after the process.  
 
 ## 4. Run the freewater_flow pipeline
 https://github.com/scilus/freewater_flow
@@ -72,11 +70,11 @@ conda activate tractflow
 cd ~/TractFlowProc
 nohup ./run_FreewaterFlow.py ~/TractFlow_workspace/results > nohup_fwf.out &
 ```
-The 'results' folder of the run_TractFlow.py should be given as an argument. The input files for freewater_flow are copied to 'fwflow_input' in ~/TractFlow_workspace (parent directory of the results folder).
+The 'results' folder of run_TractFlow.py should be passed as an argument. The input files for freewater_flow are created in 'fwflow_input' in ~/TractFlow_workspace (parent directory of the results folder).  
 
-* The '--copy_local' option allows you to work in the local workspace specified by the '--workplace' option. The results files will be copied to the ~/TractFlow_workspace/results folder.
+### optional
+* The '--copy_local' option allows you to work in the local workspace specified by the '--workplace' option. The results files will be copied to the ~/TractFlow_workspace/results folder.  
 ```
-# optional
 conda activate tractflow
 cd ~/TractFlowProc
 nohup ./run_FreewaterFlow.py ~/TractFlow_workspace/results \
