@@ -37,7 +37,7 @@ If you are using TractoFlow-ABS (Atlas Based Segmentation), you will need aparc+
 cd ~/TractFlowProc
 nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input_data > nohup_FS.out &
 ```
-The process will take a very long time (a day or more) to complete.  
+The process will take a very long time (half a day for one subject). Multiple subjects are processed in parallel and the number of simultaneous processes is (number of CPU cores)//2.  
 The files processed by Freesurfer are stored in the folder ~/TractFlow_workspace/freesurfer (parent folder of input_data).  
 Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input_data folder.  
 
