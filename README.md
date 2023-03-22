@@ -38,7 +38,7 @@ cd ~/TractFlowProc
 nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input_data > nohup_FS.out &
 ```
 The process will take a very long time (almost a day for one subject, depending on the CPU). Multiple subjects are processed in parallel and the number of simultaneous processes is (number of CPU cores)//2.  
-The files processed by Freesurfer are stored in the folder ~/TractFlow_workspace/freesurfer (parent folder of input_data).  
+The files processed by Freesurfer are stored in the folder ~/TractFlow_workspace/freesurfer.  
 Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input_data folder.  
 
 TractoFlow-ABS must be used for pathological data.  
@@ -61,7 +61,7 @@ cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible \
     --copy_local --workspace ~/TractFlowWork_local > nohup_tf.out &
 ```
-In this example, the --copy_local option causes the input_data folder to be copied to ~/TractFlowWork/, which is specified by the --workspace option, and when the process is finished, the results and work folders are copied back to the workspace (parent directory of input_data).
+In this example, the --copy_local option causes the input_data folder to be copied to ~/TractFlowWork/, which is specified by the --workspace option, and when the process is finished, the results and work folders are copied back to the workspace.
 
 ~/TractFlowWork_local can be removed after the process.
 
