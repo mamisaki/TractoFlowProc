@@ -27,9 +27,9 @@ input_data
 dwi.nii.gz : DWI image file  
 bval, bvec : b-value and b-vector files. b-vector must be of unit length.  
 t1.nii.gz : T1 anatomical image file.  
-rev_b0.nii.gz (optional) : Reverse phase encoding of b0 DWI images.
-aparc+aseg.nii.gz (optional) : FreeSurfer aparc+aseg image file.
-wmparc.nii.gz (optional) : FreeSurfer wmparc image file.
+rev_b0.nii.gz (optional) : Reverse phase encoding of b0 DWI images.  
+aparc+aseg.nii.gz (optional) : FreeSurfer aparc+aseg image file.  
+wmparc.nii.gz (optional) : FreeSurfer wmparc image file.  
 
 ## 2. Run FreeSurfer (optional)
 If you are using TractoFlow-ABS (Atlas Based Segmentation), you will need aparc+aseg.nii.gz and wmparc.nii.gz, which are created by FreeSurfer and resampled to the same space as t1.nii.gz. The script run_FreeSurfer.py processes t1.nii.gz in the input_data folder to create aparc+aseg.nii.gz and wmparc.nii.gz.
