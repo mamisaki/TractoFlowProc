@@ -16,7 +16,7 @@ input_data
 &nbsp;&nbsp;│ ├── wmparc.nii.gz (optional)  
 &nbsp;&nbsp;│ └── t1.nii.gz  
 &nbsp;&nbsp;└── S2  
-&nbsp;&nbsp;&nbsp;&nbsp;├── dwi.nii.gz  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── dwi.nii.gz  
 &nbsp;&nbsp;&nbsp;&nbsp;├── bval  
 &nbsp;&nbsp;&nbsp;&nbsp;├── bvec  
 &nbsp;&nbsp;&nbsp;&nbsp;├── rev_b0.nii.gz (optional)  
