@@ -15,14 +15,14 @@ input_data
 &nbsp;&nbsp;│ ├── aparc+aseg.nii.gz (optional)  
 &nbsp;&nbsp;│ ├── wmparc.nii.gz (optional)  
 &nbsp;&nbsp;│ └── t1.nii.gz  
-        └── S2  
-          ├── dwi.nii.gz  
-          ├── bval  
-          ├── bvec  
-          ├── rev_b0.nii.gz (optional)  
-          ├── aparc+aseg.nii.gz (optional)  
-          ├── wmparc.nii.gz (optional)  
-          └── t1.nii.gz  
+&nbsp;&nbsp;└── S2  
+&nbsp;&nbsp;&nbsp;&nbsp;├── dwi.nii.gz  
+&nbsp;&nbsp;&nbsp;&nbsp;├── bval  
+&nbsp;&nbsp;&nbsp;&nbsp;├── bvec  
+&nbsp;&nbsp;&nbsp;&nbsp;├── rev_b0.nii.gz (optional)  
+&nbsp;&nbsp;&nbsp;&nbsp;├── aparc+aseg.nii.gz (optional)  
+&nbsp;&nbsp;&nbsp;&nbsp;├── wmparc.nii.gz (optional)  
+&nbsp;&nbsp;&nbsp;&nbsp;└── t1.nii.gz  
 
 dwi.nii.gz : DWI image file  
 bval, bvec : b-value and b-vector files. b-vector must be of unit length.  
