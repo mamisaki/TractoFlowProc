@@ -18,3 +18,5 @@ swarmlog/*
 nohup.out
 pull_data_RNTDecoding.py
 launch.json
+clean_docker
+*.sif

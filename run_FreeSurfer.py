@@ -37,18 +37,27 @@ def run_reconall(input_folder, FS_SUBJ_DIR):
         if aseg_f.is_file() and wmparc_f.is_file():
             continue
 
-        IsRun = dst_root / 'scripts' / 'IsRunning.lh+rh'
-        if IsRun.is_file():
-            print(f"\n{IsRun.relative_to(FS_SUBJ_DIR)} exists."
+        IsRun = input_folder / f"IsRunning.{subjid}"
+        IsRun_FS = dst_root / 'scripts' / 'IsRunning.lh+rh'
+        if IsRun.is_file() or IsRun_FS.is_file():
+            print(f"\IsRun file exists."
                   f" Recon-all for {subjid} seems to be running.\n"
                   f"Otherwise, remove {IsRun} file.")
             continue
+
+        # Make command
+        cmd = ''
+
+        # Check if the job is running (on anohter node).
+        cmd += f"if test -f {IsRun}; then exit; fi; "
+        # Place IsRun to block other process
+        cmd += f"hostname > {IsRun} && date >> {IsRun} && "
 
         # recon-all
         t1_src_f = input_folder / subjid / 't1.nii.gz'
         t2_src_f = input_folder / subjid / 't2.nii.gz'
 
-        cmd = f"export SUBJECTS_DIR={FS_SUBJ_DIR}; recon-all -subjid {subjid}"
+        cmd += f"export SUBJECTS_DIR={FS_SUBJ_DIR}; recon-all -subjid {subjid}"
         orig_f = dst_root / 'mri' / 'orig' / '001.mgz'
         if not orig_f.is_file():
             cmd += f" -i {t1_src_f}"
@@ -59,7 +68,8 @@ def run_reconall(input_folder, FS_SUBJ_DIR):
                 cmd += f" -T2 {t2_src_f}"
             cmd += " -T2pial"
 
-        cmd += f" -all -openmp 4"
+        cmd += f" -all -openmp 4;"
+        cmd += f"if test -f {IsRun}; then rm {IsRun}; fi"
 
         Cmds.append(cmd)
         JobNames.append(f"Recon-all_{subjid}")
@@ -112,20 +122,30 @@ if __name__ == '__main__':
         description = 'Create aparc+aseg and wmparc for TractFlow pipeline')
     
     parser.add_argument('input_folder', help='input folder')
-    parser.add_argument('-o', '--outdir', help='output directory')
+    parser.add_argument('--copy_local', action='store_true',
+                        help='Copy local working place')
     parser.add_argument('--overwrite', action='store_true', help='Overwrite')
 
     args = parser.parse_args()
     input_folder = Path(args.input_folder).resolve()
     assert input_folder.is_dir(), f"No directory at {input_folder}"
-    FS_SUBJ_DIR = args.outdir
-    if FS_SUBJ_DIR is None:
-        FS_SUBJ_DIR = input_folder.parent / 'freesurfer'
+    
+    FS_SUBJ_DIR = input_folder.parent / 'freesurfer'
+    copy_local = args.copy_local
+    if copy_local and args.workplace is not None:
+        subjdir = {ath.home()} / 'freesurfer'
+    else:
+        subjdir = FS_SUBJ_DIR
     overwrite = args.overwrite
 
     # Run recon-all
-    run_reconall(input_folder, FS_SUBJ_DIR)
-    
-    # Copy aparc+aseg and wmparc to TractFlow input_folder
-    copy_aparc_wmparc(input_folder, FS_SUBJ_DIR, overwrite=overwrite)
+    run_reconall(input_folder, subjdir)
 
+    # Copy aparc+aseg and wmparc to TractFlow input_folder
+    copy_aparc_wmparc(input_folder, subjdir, overwrite=overwrite)
+    
+    # Sync to the original workpalce
+    if copy_local and subjdir != FS_SUBJ_DIR:
+        cmd = f"rsync -auvz {subjdir}/ {FS_SUBJ_DIR}/"
+        subprocess.check_call(shlex.split(cmd))
+        
