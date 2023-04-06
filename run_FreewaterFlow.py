@@ -65,15 +65,15 @@ if __name__ == '__main__':
     done_subj = []
     for sub_dir in sub_dirs:
         sub = sub_dir.name
-        results_dir = tf_results_folder.parent / 'results' / sub
+        results_dir = tf_results_folder / sub
         last_f = results_dir / 'FW_Corrected_Metrics' / \
             f"{sub}__fw_corr_tensor.nii.gz"
         if last_f.is_file() and not overwrite:
             done_subj.append(sub)
-    
+
     sub_dirs = np.setdiff1d(sub_dirs, done_subj)
 
-    # --- Prepate input files -------------------------------------------------
+    # --- Prepare input files -------------------------------------------------
     wd0 = tf_results_folder.parent
     fwflow_input_dir = wd0 / 'fwflow_input'
     if not fwflow_input_dir.is_dir():
@@ -122,6 +122,7 @@ if __name__ == '__main__':
 
     # --- Run freewater_flow --------------------------------------------------
     cmd = f"nextflow run -bg {main_nf} --input {fwflow_input_dir}"
+    cmd += f" -w fwflow_work"
     try:
         print('-' * 80)
         print(f"Run {cmd} at {workplace} in background.")
@@ -150,7 +151,7 @@ if __name__ == '__main__':
     if copy_local:
         cmd = f"rsync -rtvz --copy-links"
         cmd += " --include='results' --include='results/**'"
-        cmd += " --include='work' --include='work/**'"
+        cmd += " --include='fwflow_work' --include='fwflow_work/**'"
         cmd += f" --exclude='*' {workplace}/ {wd0}/"
         try:
             subprocess.check_call(shlex.split(cmd))

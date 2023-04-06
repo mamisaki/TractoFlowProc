@@ -27,11 +27,13 @@ if __name__ == '__main__':
                         help='All the parameters will be set to have 100% reproducible')
     parser.add_argument('--ABS', action='store_true',
                         help='TractoFlow-ABS (Atlas Based Segmentation) is used.')
+    parser.add_argument('--fs', help='FreeSurfer output folder')
     parser.add_argument('--copy_local', action='store_true',
                         help='Copy local working place')
     parser.add_argument('--workplace', help='Local working place')
     parser.add_argument('--with_docker', action='store_true',
                         help='with docker')
+    parser.add_argument('--processes', help='The number of parallel processes to launch.')
     parser.add_argument('--overwrite', action='store_true', help='Overwrite')
 
     args = parser.parse_args()
@@ -41,15 +43,23 @@ if __name__ == '__main__':
     use_cuda = args.use_cuda
     fully_reproducible = args.fully_reproducible
     ABS = args.ABS
+    fs = args.fs
+    if ABS and fs is None:
+        fs = input_folder.parent / 'freesurfer'
     copy_local = args.copy_local
-    if copy_local and args.workplace is not None:
-        workplace = Path(args.workplace).resolve()
+    workplace = args.workplace
+    if copy_local and workplace is not None:
+        workplace = Path(workplace).resolve()
     with_docker = args.with_docker
+    processes = args.processes
     overwrite = args.overwrite
-
+    
     # --- Copy to local working place -----------------------------------------
     wd = input_folder.parent
     if copy_local:
+        if workplace is None:
+            workplace = Path.home() / 'TractFlowWork_local'
+
         if not workplace.is_dir():
             try:
                 os.makedirs(workplace)
@@ -57,9 +67,14 @@ if __name__ == '__main__':
                 print(f"Failed to create {workplace}")
                 sys.exit()
 
-        cmd = f"rsync -auvz --exclude='.nextflow*'"
-        if overwrite:
-            cmd += " --exclude='work' --exclude='results'"
+        cmd = f"rsync -auvz --include='{input_folder.name}'"
+        cmd += f" --include='{input_folder.name}/**'"
+        if not overwrite:
+            if (input_folder.parent / 'work').is_dir():
+                cmd += " --include='work' --include='work/**'"
+            if (input_folder.parent / 'results').is_dir():
+                cmd += " include='results' --include='results/**'"
+        cmd += " --exclude='*'"
         cmd += f" {input_folder.parent}/ {workplace}/"
         try:
             subprocess.check_call(shlex.split(cmd))
@@ -73,6 +88,11 @@ if __name__ == '__main__':
 
     # --- Run TractFlow -------------------------------------------------------
     cmd = f"nextflow run -bg tractoflow -r 2.4.1 --input {input_folder}"
+    if ABS:
+        cmd += " --fs {fs}"
+    if processes is not None:
+        cmd += " --processes {processes}"
+
     profile = ['cbrain']
     if use_cuda:
         profile.append('use_cuda')
@@ -89,6 +109,7 @@ if __name__ == '__main__':
     if with_docker:
         cmd += ' -with-docker scilus/scilus:1.4.2'
     cmd += ' -resume'
+
     try:
         subprocess.check_call(shlex.split(cmd), cwd=wd)
     except Exception:
