@@ -20,12 +20,13 @@ cd
 git clone https://github.com/scilus/scilpy.git
 ```
 
-## Install scilpy in conda environment
+## Install scilpy and antspyx in conda environment
 ```
 conda create -n tractflow python=3.10 pip hdf5=1.12 cython numpy -c anaconda
 conda activate tractflow
 cd ~/scilpy
 pip install -e .
+pip antspyx
 ```
 
 ## Download nextflow
