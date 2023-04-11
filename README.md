@@ -63,21 +63,32 @@ cd ~/TractFlowProc
 nohup ./run_FreewaterFlow.py ~/TractFlow_workspace/results > nohup_fwf.out &
 ```
 The 'results' folder of run_TractFlow.py should be passed as an argument. The input files for freewater_flow are created in 'fwflow_input' in '\~/TractFlow_workspace' (parent directory of the results folder).  
-Working directory, '\~/TractFlow_workspace/fwflow_work', will also be made.
+A working directory, '\~/TractFlow_workspace/fwflow_work', is also created.
 
 The command returns immediately, and the process runs in the background.  
 The process takes a very long time: > 10h for one subject. Multiple subjects are processed in parallel.  
 
 ## 5. Result files
-Result files are saved in the ~/TractFlow_workspace/results/*subject* folders.  
+Result files are stored in the ~/TractFlow_workspace/results/*subject* folders.  
 
 - DTI_Metrics/  
-    The axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [[Batchelor et al., 2005](https://onlinelibrary.wiley.com/doi/10.1002/mrm.20334)], mean diffusivity (md), radial diffusivity (rd), tensor, tensor norm [[Kindlmann et al., 2007](https://ieeexplore.ieee.org/abstract/document/4359059)], tensor eigenvalues, tensor eigenvectors, tensor mode, and color-FA are made.
+    The axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [[Batchelor et al., 2005](https://onlinelibrary.wiley.com/doi/10.1002/mrm.20334)], mean diffusivity (md), radial diffusivity (rd), tensor, tensor norm [[Kindlmann et al., 2007](https://ieeexplore.ieee.org/abstract/document/4359059)], tensor eigenvalues, tensor eigenvectors, tensor mode, and color-FA are created.
 
 - FODF_Metrics/  
-    The metrics of fiber orientation distribution function (fODF) computed are the total and maximum Apparent Fiber Density (AFD) [[Raffelt et al., 2012](https://www.sciencedirect.com/science/article/pii/S1053811911012092)], the Number of Fiber Orientation (NuFO) [[Dell’Acqua et al., 2013](https://onlinelibrary.wiley.com/doi/epdf/10.1002/hbm.22080)] and principal fODFs orientations (up to 5 per voxel).
+    The fiber orientation distribution function (fODF) metrics computed are the total and maximum Apparent Fiber Density (AFD) [[Raffelt et al., 2012](https://www.sciencedirect.com/science/article/pii/S1053811911012092)], the Number of Fiber Orientation (NuFO) [[Dell’Acqua et al., 2013](https://onlinelibrary.wiley.com/doi/epdf/10.1002/hbm.22080)] and principal fODFs orientations (up to 5 per voxel).
 
+- FW_Corrected_Metrics  
+    DTI metrics files with freewater correction are created in this folder.    
+    
 - Local_Tracking/  
-    *subject*__local_tracking_prob_wm_seeding_wm_mask_seed_0.trk 
+    *subject*__local_tracking_prob_wm_seeding_wm_mask_seed_0.trk  
 
-# 6. Standardize DTI and fODF metrics
+## 6. Standardize DTI and fODF metrics
+The run_Warp2template.py script normalizes the DTI and fDOF metric files to MNI152 template brain.  
+```
+conda activate tractflow
+cd ~/TractFlowProc
+nohup ./run_Warp2template.py ~/TractFlow_workspace/results > nohup_wrp.out &
+```
+
+The result files are saved in the 'Standardize_*' folders in the results folder.
