@@ -1,11 +1,10 @@
 # README
-See the INSTALL file to set up the tools. It is assumed that the TractFlowProc scripts are stored in ~/TractFlowProc and the workspace is ~/TractFlow_workspace.
+See the [INSTALL](INSTALL.md) file to set up the environment. These instructions assume that the TractFlowProc scripts are stored in ~/TractFlowProc and the workspace is ~/TractFlow_workspace.
 
 ## 1. Prepare data files
-Create an input data folder (e.g. ~/TractFlow_workspace/input_data).
-Place the data file for each subject (e.g. S1, S2, ...) into the
-input_data folder.
-The data structure is as follows
+Create an input data folder (e.g. ~/TractFlow_workspace/input_data).  
+Place the data file for each subject (e.g. S1, S2, ...) into the input_data folder.  
+The data structure is as follows:  
 input_data  
 &nbsp;&nbsp;├── S1  
 &nbsp;&nbsp;│ ├── dwi.nii.gz  
@@ -24,12 +23,12 @@ input_data
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── wmparc.nii.gz (optional)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── t1.nii.gz  
 
-dwi.nii.gz : DWI image file  
-bval, bvec : b-value and b-vector files. b-vector must be of unit length.  
-t1.nii.gz : T1 anatomical image file.  
-rev_b0.nii.gz (optional) : Reverse phase encoding of b0 DWI images.  
-aparc+aseg.nii.gz (optional) : FreeSurfer aparc+aseg image file.  
-wmparc.nii.gz (optional) : FreeSurfer wmparc image file.  
+dwi.nii.gz: DWI image file.  
+bval, bvec: b-value and b-vector files. b-vector must be of unit length.  
+t1.nii.gz: T1 anatomical image file.  
+rev_b0.nii.gz (optional): Reverse phase encoding of b0 DWI images.  
+aparc+aseg.nii.gz (optional): FreeSurfer aparc+aseg image file.  
+wmparc.nii.gz (optional): FreeSurfer wmparc image file.  
 
 ## 2. Run FreeSurfer (optional)
 If you are using TractoFlow-ABS (Atlas Based Segmentation), you will need aparc+aseg.nii.gz and wmparc.nii.gz, which are created by FreeSurfer and resampled to the same space as t1.nii.gz. The script run_FreeSurfer.py processes t1.nii.gz in the input_data folder to create aparc+aseg.nii.gz and wmparc.nii.gz.
