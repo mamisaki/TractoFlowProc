@@ -31,17 +31,18 @@ aparc+aseg.nii.gz (optional): FreeSurfer aparc+aseg image file.
 wmparc.nii.gz (optional): FreeSurfer wmparc image file.  
 
 ## 2. Run FreeSurfer (optional)
-If you are using TractoFlow-ABS (Atlas Based Segmentation), you will need aparc+aseg.nii.gz and wmparc.nii.gz, which are created by FreeSurfer and resampled to the same space as t1.nii.gz. The script run_FreeSurfer.py processes t1.nii.gz in the input_data folder to create aparc+aseg.nii.gz and wmparc.nii.gz.
+You can skip this step. Only if you are using Atlas Based Segmentation (ABS) in Tractflow because the T1 image contrast is not good enough to segment tissue, you should perform this process.  
+
+The fiber tracking process uses the white matter (WM), gray matter (GM), and cerebrospinal fluid (CSF) maps to compute the tracking maps and the seeding mask. These masks are extracted by default with 'fast' in FSL for t1.nii.gz, but you can also use a FreeSurfer segmentation, i.e. aparc+aseg.nii.gz and wmparc.nii.gz, with the --ABS option in tractflow.  
+
+The script run_FreeSurfer.py processes t1.nii.gz in the input_data folder to create aparc+aseg.nii.gz and wmparc.nii.gz.
 ```
 cd ~/TractFlowProc
 nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input_data > nohup_FS.out &
 ```
-The process will take a very long time (almost a day for one subject, depending on the CPU). Multiple subjects are processed in parallel and the number of simultaneous processes is (number of CPU cores)//2.  
-The files processed by Freesurfer are stored in the folder ~/TractFlow_workspace/freesurfer.  
+The process will take a very long time (almost a day for one subject, depending on the CPU). Multiple subjects are processed in parallel, and the number of simultaneous processes is '(number of CPU cores)//2'.  
+The files processed by FreeSurfer are stored in the folder ~/TractFlow_workspace/freesurfer.  
 Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input_data folder.  
-
-TractoFlow-ABS must be used for pathological data.  
-You can skip this process if you are not using TractoFlow-ABS.  
 
 ## 3. Run the TractoFlow pipeline
 https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
@@ -50,9 +51,9 @@ cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible > nohup_tf.out &
 ```
 The command returns immediately, and the process runs in the background.  
-The process takes a very long time: > 10h for one subject. Multiple subjects are processed in parallel.
+The process takes a very long time: > 10h for one subject. Multiple subjects are processed in parallel.  
 
-* Add '--ABS' option to run TractoFlow-ABS (See 2.).  
+* Add '--ABS' option to run TractoFlow-ABS (See [2]().).  
 
 * If the workspace is on a network share, the trac_flow pipeline will fail. Then, add the `-copy_local' option to the run_FreeSurfer command, for example,
 ```
