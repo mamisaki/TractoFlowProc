@@ -77,7 +77,7 @@ Result files are saved in the ~/TractFlow_workspace/results/*subject* folders.
 - FODF_Metrics/  
     The metrics of fiber orientation distribution function (fODF) computed are the total and maximum Apparent Fiber Density (AFD) [[Raffelt et al., 2012](https://www.sciencedirect.com/science/article/pii/S1053811911012092)], the Number of Fiber Orientation (NuFO) [[Dell’Acqua et al., 2013](https://onlinelibrary.wiley.com/doi/epdf/10.1002/hbm.22080)] and principal fODFs orientations (up to 5 per voxel).
 
-- Local_Tracking/ 
+- Local_Tracking/  
     *subject*__local_tracking_prob_wm_seeding_wm_mask_seed_0.trk 
 
 # 6. Standardize DTI and fODF metrics
