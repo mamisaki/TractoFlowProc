@@ -31,9 +31,9 @@ aparc+aseg.nii.gz (optional): FreeSurfer aparc+aseg image file.
 wmparc.nii.gz (optional): FreeSurfer wmparc image file.  
 
 ## 2. Run FreeSurfer (optional)
-You can skip this step. Only if you are using Atlas Based Segmentation (ABS) in Tractflow because the T1 image contrast is not good enough to segment tissue, you should perform this process.  
+**You can skip this step.** Only if the T1 image contrast is not good enough to segment tissue and you need to use Atlas Based Segmentation (ABS) in Tractflow, you should perform this process.  
 
-The fiber tracking process uses the white matter (WM), gray matter (GM), and cerebrospinal fluid (CSF) maps to compute the tracking maps and the seeding mask. These masks are extracted by default with 'fast' in FSL for t1.nii.gz, but you can also use a FreeSurfer segmentation, i.e. aparc+aseg.nii.gz and wmparc.nii.gz, with the --ABS option in tractflow.  
+The fiber tracking process uses the white matter (WM), gray matter (GM), and cerebrospinal fluid (CSF) maps to compute the tracking maps and the seeding mask. These masks are extracted by default with 'fast' in FSL for t1.nii.gz, but you can also use a FreeSurfer segmentation, i.e. aparc+aseg and wmparc, with the --ABS option in tractflow.  
 
 The script run_FreeSurfer.py processes t1.nii.gz in the input_data folder to create aparc+aseg.nii.gz and wmparc.nii.gz.
 ```
@@ -53,15 +53,7 @@ nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_
 The command returns immediately, and the process runs in the background.  
 The process takes a very long time: > 10h for one subject. Multiple subjects are processed in parallel.  
 
-* Add '--ABS' option to run TractoFlow-ABS (See [2]().).  
-
-* If the workspace is on a network share, the trac_flow pipeline will fail. Then, add the `-copy_local' option to the run_FreeSurfer command, for example,
-```
-cd ~/TractFlowProc
-nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible \
-    --copy_local --workspace ~/TractFlowWork_local > nohup_tf.out &
-```
-In this example, the '--copy_local' option causes the input_data folder to be copied to ~/TractFlowWork/, which is specified by the '--workspace' option, and when the process is finished, the results and work folders are copied back to the workspace. ~/TractFlowWork_local can be removed after the process.  
+* Add '--ABS' option to run TractoFlow-ABS (See [2](#2-run-freesurfer-optional)).  
 
 ## 4. Run the freewater_flow pipeline
 https://github.com/scilus/freewater_flow
@@ -71,18 +63,15 @@ cd ~/TractFlowProc
 nohup ./run_FreewaterFlow.py ~/TractFlow_workspace/results > nohup_fwf.out &
 ```
 The 'results' folder of run_TractFlow.py should be passed as an argument. The input files for freewater_flow are created in 'fwflow_input' in ~/TractFlow_workspace (parent directory of the results folder).  
+Working directory, '~/TractFlow_workspace/fwflow_work', will also be made.
 
-### optional
-* The '--copy_local' option allows you to work in the local workspace specified by the '--workplace' option. The results files will be copied to the ~/TractFlow_workspace/results folder.  
-```
-conda activate tractflow
-cd ~/TractFlowProc
-nohup ./run_FreewaterFlow.py ~/TractFlow_workspace/results \
-    --copy_local --workspace ~/FWFlowWork_local
-```
-~/FWFlowWork_local can be removed after the process.
+The command returns immediately, and the process runs in the background.  
+The process takes a very long time: > 10h for one subject. Multiple subjects are processed in parallel.  
 
 ## 5. Result files
 Result files are saved in the ~/TractFlow_workspace/results/[subject] folders.  
+
+- DTI_Metrics/  
+    The axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [[Batchelor et al., 2005](https://onlinelibrary.wiley.com/doi/10.1002/mrm.20334)], mean diffusivity (md), radial diffusivity (rd), tensor, tensor norm [[Kindlmann et al., 2007](https://ieeexplore.ieee.org/abstract/document/4359059)], tensor eigenvalues, tensor eigenvectors, tensor mode, and color-FA are made.
 
 
