@@ -69,9 +69,15 @@ The command returns immediately, and the process runs in the background.
 The process takes a very long time: > 10h for one subject. Multiple subjects are processed in parallel.  
 
 ## 5. Result files
-Result files are saved in the ~/TractFlow_workspace/results/[subject] folders.  
+Result files are saved in the ~/TractFlow_workspace/results/*subject* folders.  
 
 - DTI_Metrics/  
     The axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [[Batchelor et al., 2005](https://onlinelibrary.wiley.com/doi/10.1002/mrm.20334)], mean diffusivity (md), radial diffusivity (rd), tensor, tensor norm [[Kindlmann et al., 2007](https://ieeexplore.ieee.org/abstract/document/4359059)], tensor eigenvalues, tensor eigenvectors, tensor mode, and color-FA are made.
 
+- FODF_Metrics/  
+    The metrics of fiber orientation distribution function (fODF) computed are the total and maximum Apparent Fiber Density (AFD) [[Raffelt et al., 2012]()], the Number of Fiber Orientation (NuFO) [[Dell’Acqua et al., 2013]()] and principal fODFs orientations (up to 5 per voxel).
 
+- Local_Tracking/ 
+    *subject*__local_tracking_prob_wm_seeding_wm_mask_seed_0.trk 
+
+# 6. Standardize DTI and fODF metrics
