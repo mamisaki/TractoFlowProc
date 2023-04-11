@@ -84,7 +84,7 @@ Result files are stored in the ~/TractFlow_workspace/results/*subject* folders.
     *subject*__local_tracking_prob_wm_seeding_wm_mask_seed_0.trk  
 
 ## 6. Standardize DTI and fODF metrics
-The run_Warp2template.py script normalizes the DTI and fDOF metric files to MNI152 template brain.  
+The run_Warp2template.py script normalizes the DTI and fDOF metric files to MNI152 template space.  
 ```
 conda activate tractflow
 cd ~/TractFlowProc
