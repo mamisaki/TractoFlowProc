@@ -16,12 +16,18 @@ import nibabel as nib
 
 from  ants_run import ants_registration, ants_warp_resample
 
-
 if '__file__' not in locals():
     __file__ = 'run_Warp2MNI.py'
     
 script_dir = Path(__file__).resolve().parent
 MNI_f = script_dir / 'MNI152_T1_1mm_brain.nii.gz'
+
+metric_files = {'DTI_Metrics': ('ad', 'fa', 'ga', 'md', 'rd'),
+                'FODF_Metrics': ('afd_max', 'afd_sum', 'afd_total', 'nufo'),
+                'FW_Corrected_Metrics':
+                    ('fw_corr_ad', 'fw_corr_fa', 'fw_corr_ga', 'fw_corr_md',
+                     'fw_corr_rd')
+}
 
 
 # %% warp_MNI_T1 ==============================================================
@@ -44,14 +50,8 @@ def warp_MNI_T1(regt1_fs, template=MNI_f, overwrite=False):
 
 
 # %% apply_warp ===============================================================
-def apply_warp(regt1_fs, template=MNI_f, overwrite=False):
-    
-    metrics = {'DTI_Metrics': ('ad', 'fa', 'ga', 'md', 'rd'),
-               'FODF_Metrics': ('afd_max', 'afd_sum', 'afd_total', 'nufo'),
-               'FW_Corrected_Metrics':
-                   ('fw_corr_ad', 'fw_corr_fa', 'fw_corr_ga', 'fw_corr_md',
-                    'fw_corr_rd')
-    }
+def apply_warp(regt1_fs, template=MNI_f, metric_files=metric_files,
+               overwrite=False):
     
     for t1_f in tqdm(regt1_fs, desc='Apply warping'):
         work_root = t1_f.parent.parent
@@ -62,9 +62,9 @@ def apply_warp(regt1_fs, template=MNI_f, overwrite=False):
         invwrp_f = Standardize_T1_dir / 'template2orig_1InverseWarp.nii.gz'
         if not aff_f.is_file() or not invwrp_f.is_file():
             continue
-    
+
         # Apply warp
-        for metric_dir, metric in metrics.items():
+        for metric_dir, metric in metric_files.items():
             src_dir = work_root / metric_dir
             if not src_dir.is_dir():
                 continue
@@ -75,7 +75,9 @@ def apply_warp(regt1_fs, template=MNI_f, overwrite=False):
 
             for metric in metric:
                 src_f = src_dir / f"{work_root.name}__{metric}.nii.gz"
-                assert src_f.is_file()
+                if not src_f.is_file():
+                    print(f"Not found {src_f}.")
+                    continue
 
                 warped_f = dst_dir / \
                     src_f.name.replace('.nii.gz', '_standard.nii.gz')
@@ -97,7 +99,7 @@ def apply_warp(regt1_fs, template=MNI_f, overwrite=False):
                                           stderr=subprocess.PIPE)
                 except Exception as e:
                     pass
-    
+
 
 # %% __main__ =================================================================
 if __name__ == '__main__':
@@ -122,7 +124,7 @@ if __name__ == '__main__':
     template = MNI_f
     overwrite = False
     '''
-    
+
     # --- Get input data dirs -------------------------------------------------
     sub_dirs = [sub_dir for sub_dir in results_folder.glob('*')
                 if sub_dir.is_dir() and
@@ -139,7 +141,8 @@ if __name__ == '__main__':
     
     # Calculate warping parameters
     warp_MNI_T1(regt1_fs, template=template, overwrite=overwrite)
-    
+
     # Apply warp to DTI and FODF metrics files to standardize
-    apply_warp(regt1_fs, template=template, overwrite=overwrite)
-    
+    apply_warp(regt1_fs, template=template, metric_files=metric_files,
+               overwrite=overwrite)
+

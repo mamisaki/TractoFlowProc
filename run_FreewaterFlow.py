@@ -25,6 +25,7 @@ import shlex
 import subprocess
 import sys
 import shutil
+import time
 
 import numpy as np
 
@@ -56,7 +57,15 @@ if __name__ == '__main__':
         workplace = Path(workplace).resolve()
     overwrite = args.overwrite
 
-    # --- Get input data dirs -------------------------------------------------
+    '''DEBUG
+    tf_results_folder = Path.home() / 'MRI/TractFlow_workspace/RNT_decoding/results'
+    main_nf = Path.home() / 'freewater_flow' / 'main.nf'
+    copy_local = False
+    workplace = None
+    overwrite = False
+    '''
+
+    # --- Get input data ----------------------------------------------------
     sub_dirs = [sub_dir for sub_dir in tf_results_folder.glob('*')
                 if sub_dir.is_dir() and
                 sub_dir.name not in ('Readme', 'Compute_Kernel')]
@@ -69,15 +78,17 @@ if __name__ == '__main__':
         last_f = results_dir / 'FW_Corrected_Metrics' / \
             f"{sub}__fw_corr_tensor.nii.gz"
         if last_f.is_file() and not overwrite:
-            done_subj.append(sub)
+            done_subj.append(sub_dir)
 
     sub_dirs = np.setdiff1d(sub_dirs, done_subj)
 
     # --- Prepare input files -------------------------------------------------
     wd0 = tf_results_folder.parent
+    
     fwflow_input_dir = wd0 / 'fwflow_input'
-    if not fwflow_input_dir.is_dir():
-        fwflow_input_dir.mkdir()
+    if fwflow_input_dir.is_dir():
+        shutil.rmtree(fwflow_input_dir)
+    fwflow_input_dir.mkdir()
 
     file_patterns = {'dwi.nii.gz': ('Resample_DWI',  '__dwi_resampled.nii.gz'),
                      'bval': ('Eddy_Topup', '__bval_eddy'),
@@ -87,6 +98,7 @@ if __name__ == '__main__':
     }
 
     print('Copy tractflow results for freewater_flow')
+    excld_subj = []
     for sub_dir in sub_dirs:
         if not sub_dir.is_dir():
             continue
@@ -98,16 +110,15 @@ if __name__ == '__main__':
         
         for dst_pat, src_pat in file_patterns.items():
             dst_f = dst_dir / dst_pat
-            if not dst_f.is_file() or overwrite:
-                src_f = sub_dir / src_pat[0] / f"{sub}{src_pat[1]}"
-                if not src_f.is_file():
-                    print(f"Not found {src_f} for {dst_f.name}")
-                    continue
-                
-                print(f"Link {dst_f.relative_to(wd0)} to"
-                      f" {src_f.relative_to(wd0)}")
-                dst_f.symlink_to(src_f)
-                #shutil.copyfile(src_f, dst_f, follow_symlinks=True)
+            src_f = sub_dir / src_pat[0] / f"{sub}{src_pat[1]}"
+            if not src_f.is_file():
+                print(f"Not found {src_f} for {dst_f.name}")
+                shutil.rmtree(dst_dir)
+                excld_subj.append(sub_dir)
+                break
+            dst_f.symlink_to(src_f)
+        
+    sub_dirs = np.setdiff1d(sub_dirs, excld_subj)
 
     # --- Prepare local workplace ---------------------------------------------
     if copy_local:
@@ -122,7 +133,7 @@ if __name__ == '__main__':
 
     # --- Run freewater_flow --------------------------------------------------
     cmd = f"nextflow run -bg {main_nf} --input {fwflow_input_dir}"
-    cmd += f" -w fwflow_work"
+    cmd += f" -w q"
     try:
         print('-' * 80)
         print(f"Run {cmd} at {workplace} in background.")
@@ -132,8 +143,9 @@ if __name__ == '__main__':
         print(f"Failed to run {cmd}")
         sys.exit()
 
-    # Wait for finish
+    # Wait for complete
     while True:
+        # Check if all the result filese are made
         done_subj = []
         for sub_dir in sub_dirs:
             sub = sub_dir.name
@@ -141,11 +153,27 @@ if __name__ == '__main__':
             last_f = results_dir / 'FW_Corrected_Metrics' / \
                 f"{sub}__fw_corr_tensor.nii.gz"
             if last_f.is_file() and not overwrite:
-                done_subj.append(sub)
+                for ff in list(sub_dir.glob('*/*')):
+                    # Make symlink to the real file
+                    if ff.is_symlink():
+                        dst_f = ff
+                        src_f = ff.resolve()
+                        ff.unlink()
+                        shutil.copy(src_f, dst_f)
+                done_subj.append(sub_dir)
 
         last_dirs = np.setdiff1d(sub_dirs, done_subj)
         if len(last_dirs) == 0:
             break
+
+        # Check if the process is running
+        cmd = f"pgrep -f 'run -bg {main_nf}'"
+        try:
+            out = subprocess.check_output(shlex.split(cmd))
+        except Exception:
+            break
+        
+        time.sleep(10)
 
     # --- Copy back ------------------------------------------------------------
     if copy_local:
@@ -158,3 +186,13 @@ if __name__ == '__main__':
         except Exception:
             print(f"Failed to run {cmd}")
             sys.exit()
+    
+    # --- Copy the files for symlinks -----------------------------------------
+    for sub_dir in sub_dirs:
+        for ff in list(sub_dir.glob('*/*')):
+            if ff.is_symlink():
+                dst_f = ff
+                src_f = ff.resolve()
+                ff.unlink()
+                shutil.copy(src_f, dst_f)
+
