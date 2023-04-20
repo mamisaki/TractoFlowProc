@@ -2,10 +2,10 @@
 See the [INSTALL](INSTALL.md) file to set up the environment. These instructions assume that the TractFlowProc scripts are stored in ~/TractFlowProc and the workspace is ~/TractFlow_workspace.
 
 ## 1. Prepare data files
-Create an input data folder (e.g. ~/TractFlow_workspace/input_data).  
-Place the data file for each subject (e.g. S1, S2, ...) into the input_data folder.  
+Create an input data folder (e.g. ~/TractFlow_workspace/input).  
+Place the data file for each subject (e.g. S1, S2, ...) into the input folder.  
 The data structure is as follows:  
-input_data  
+input  
 &nbsp;&nbsp;├── S1  
 &nbsp;&nbsp;│ ├── dwi.nii.gz  
 &nbsp;&nbsp;│ ├── bval  
@@ -35,20 +35,20 @@ wmparc.nii.gz (optional): FreeSurfer wmparc image file.
 
 The fiber tracking process uses the white matter (WM), gray matter (GM), and cerebrospinal fluid (CSF) maps to compute the tracking maps and the seeding mask. These masks are extracted by default with 'fast' in FSL for t1.nii.gz, but you can also use a FreeSurfer segmentation, i.e. aparc+aseg and wmparc, with the --ABS option in tractflow.  
 
-The script run_FreeSurfer.py processes t1.nii.gz in the input_data folder to create aparc+aseg.nii.gz and wmparc.nii.gz.
+The script run_FreeSurfer.py processes t1.nii.gz in the input folder to create aparc+aseg.nii.gz and wmparc.nii.gz.
 ```
 cd ~/TractFlowProc
-nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input_data > nohup_FS.out &
+nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input > nohup_FS.out &
 ```
 The process will take a very long time (almost a day for one subject, depending on the CPU). Multiple subjects are processed in parallel, and the number of simultaneous processes is '(number of CPU cores)//2'.  
 The files processed by FreeSurfer are stored in the folder ~/TractFlow_workspace/freesurfer.  
-Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input_data folder.  
+Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input folder.  
 
 ## 3. Run the TractoFlow pipeline
 https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
 ```
 cd ~/TractFlowProc
-nohup ./run_TractFlow.py ~/TractFlow_workspace/input_data --with_docker --fully_reproducible > nohup_tf.out &
+nohup ./run_TractFlow.py ~/TractFlow_workspace/input --with_docker --fully_reproducible > nohup_tf.out &
 ```
 The command returns immediately, and the process runs in the background.  
 The process takes a very long time: > 10h for one subject. Multiple subjects are processed in parallel.  
@@ -92,3 +92,13 @@ nohup ./run_Warp2template.py ~/TractFlow_workspace/results > nohup_wrp.out &
 ```
 
 The result files are saved in the 'Standardize_*' folders in the results folder.
+
+## 7. Probabilistic fiber tracking with bedpostX and probtrackX
+Running a probabilistic fiber tracking analysis with [FSL FDT tools](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide), [BEDPOSTX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#BEDPOSTX) and [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres).  
+```
+cd ~/TractFlowProc
+nohup ./run_bedpostX.py ~/TractFlow_workspace/results > nohup_wrp.out &
+```
+
+
+
