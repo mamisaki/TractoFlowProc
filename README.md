@@ -109,7 +109,7 @@ or if no GPU is available,
 cd ~/TractFlowProc
 nohup ./run_bedpostX.py --stdize ~/TractFlow_workspace/results > nohup_bpx.out &
 ```
-With '--stdize' option, MNI warping parameters are alculated in \*.bedpostX folder.
+With '--stdize' option, MNI warping parameters are calculated and srored in '\*.bedpostX/xfms' folder.  
 
-The results are stored in '~/TractFlow_workspace/FDT/\*.bedpostX' foldres.
+The results are stored in '~/TractFlow_workspace/FDT/\*.bedpostX' foldres.  
 
