@@ -93,12 +93,23 @@ nohup ./run_Warp2template.py ~/TractFlow_workspace/results > nohup_wrp.out &
 
 The result files are saved in the 'Standardize_*' folders in the results folder.
 
-## 7. Probabilistic fiber tracking with bedpostX and probtrackX
-Running a probabilistic fiber tracking analysis with [FSL FDT tools](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide), [BEDPOSTX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#BEDPOSTX) and [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres).  
+## 7. FDT processing
+Running a probabilistic fiber tracking analysis with [FSL FDT tools](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide), [BEDPOSTX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#BEDPOSTX) and [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres). 
+
+### BEDPOSTX
+Run commnd below, 
+if GPU can be used,
 ```
 cd ~/TractFlowProc
-nohup ./run_bedpostX.py ~/TractFlow_workspace/results > nohup_bpx.out &
+nohup ./run_bedpostX.py --gpu --stdize ~/TractFlow_workspace/results > nohup_bpx.out &
 ```
 
+or if no GPU is available,
+```
+cd ~/TractFlowProc
+nohup ./run_bedpostX.py --stdize ~/TractFlow_workspace/results > nohup_bpx.out &
+```
+With '--stdize' option, MNI warping parameters are alculated in \*.bedpostX folder.
 
+The results are stored in '~/TractFlow_workspace/FDT/\*.bedpostX' foldres.
 
