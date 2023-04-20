@@ -97,7 +97,7 @@ The result files are saved in the 'Standardize_*' folders in the results folder.
 Running a probabilistic fiber tracking analysis with [FSL FDT tools](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide), [BEDPOSTX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#BEDPOSTX) and [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres).  
 ```
 cd ~/TractFlowProc
-nohup ./run_bedpostX.py ~/TractFlow_workspace/results > nohup_wrp.out &
+nohup ./run_bedpostX.py ~/TractFlow_workspace/results > nohup_bpx.out &
 ```
 
 
