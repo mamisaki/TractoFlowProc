@@ -44,7 +44,7 @@ The process will take a very long time (almost a day for one subject, depending 
 The files processed by FreeSurfer are stored in the folder ~/TractFlow_workspace/freesurfer.  
 Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input folder.  
 
-## 3. Run the TractoFlow pipeline
+## 3. TractoFlow pipeline
 https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
 ```
 cd ~/TractFlowProc
@@ -55,7 +55,7 @@ The process takes a very long time: > 10h for one subject. Multiple subjects are
 
 * Add '--ABS' option to run TractoFlow-ABS (See [2](#2-run-freesurfer-optional)).  
 
-## 4. Run the freewater_flow pipeline
+## 4. freewater_flow pipeline
 https://github.com/scilus/freewater_flow
 ```
 conda activate tractflow
