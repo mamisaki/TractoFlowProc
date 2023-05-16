@@ -4,21 +4,15 @@
 # %% import ===================================================================
 import argparse
 from pathlib import Path
-import os
 import shlex
 import subprocess
-import sys
-import shutil
 
-import numpy as np
 from tqdm import tqdm
-import nibabel as nib
-
-from  ants_run import ants_registration, ants_warp_resample
+from ants_run import ants_registration, ants_warp_resample
 
 if '__file__' not in locals():
     __file__ = 'run_Warp2MNI.py'
-    
+
 script_dir = Path(__file__).resolve().parent
 MNI_f = script_dir / 'MNI152_T1_1mm_brain.nii.gz'
 
@@ -27,12 +21,12 @@ metric_files = {'DTI_Metrics': ('ad', 'fa', 'ga', 'md', 'rd'),
                 'FW_Corrected_Metrics':
                     ('fw_corr_ad', 'fw_corr_fa', 'fw_corr_ga', 'fw_corr_md',
                      'fw_corr_rd')
-}
+                }
 
 
 # %% warp_MNI_T1 ==============================================================
 def warp_MNI_T1(regt1_fs, template=MNI_f, overwrite=False):
-    
+
     for t1_f in tqdm(regt1_fs, desc='ANTs registration'):
         work_dir = t1_f.parent.parent / 'Standardize_T1'
         if not work_dir.is_dir():
@@ -42,20 +36,19 @@ def warp_MNI_T1(regt1_fs, template=MNI_f, overwrite=False):
         invwrp_f = work_dir / 'template2orig_1InverseWarp.nii.gz'
         if aff_f.is_file() and invwrp_f.is_file() and not overwrite:
             continue
-        
+
         # Run ANTs registration: template_f -> t1
-        warp_params = ants_registration(t1_f, template,
-                                        f"{work_dir}/template2orig_",
-                                        verbose=False)
+        _ = ants_registration(t1_f, template, f"{work_dir}/template2orig_",
+                              verbose=False)
 
 
 # %% apply_warp ===============================================================
 def apply_warp(regt1_fs, template=MNI_f, metric_files=metric_files,
                overwrite=False):
-    
+
     for t1_f in tqdm(regt1_fs, desc='Apply warping'):
         work_root = t1_f.parent.parent
-        
+
         # Check if warping paramter files exist
         Standardize_T1_dir = work_root / 'Standardize_T1'
         aff_f = Standardize_T1_dir / 'template2orig_0GenericAffine.mat'
@@ -82,7 +75,7 @@ def apply_warp(regt1_fs, template=MNI_f, metric_files=metric_files,
                 warped_f = dst_dir / \
                     src_f.name.replace('.nii.gz', '_standard.nii.gz')
                 if warped_f.is_file() and not overwrite:
-                    continue                    
+                    continue
 
                 # Apply warp with resample in fix_f space
                 warp_params = [str(aff_f), str(invwrp_f)]
@@ -92,12 +85,12 @@ def apply_warp(regt1_fs, template=MNI_f, metric_files=metric_files,
                     template, src_f, warped_f, warp_params,
                     interpolator='linear', imagetype=0,
                     whichtoinvert=whichtoinvert, verbose=False)
-                
+
                 try:
                     cmd = f"3drefit -view tlrc -space MNI {out_f}"
                     subprocess.check_call(shlex.split(cmd),
                                           stderr=subprocess.PIPE)
-                except Exception as e:
+                except Exception:
                     pass
 
 
@@ -105,22 +98,23 @@ def apply_warp(regt1_fs, template=MNI_f, metric_files=metric_files,
 if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
-        prog = 'run_Warp2MNI',
-        description = 'warp DTI and FODF metrics into MNI space')
-    
+        prog='run_Warp2MNI',
+        description='warp DTI and FODF metrics into MNI space')
+
     parser.add_argument('results_folder', help='TractFlow results folder')
     parser.add_argument('--template', default=MNI_f,
                         help='Template brain file')
     parser.add_argument('--overwrite', action='store_true', help='Overwrite')
-    
+
     args = parser.parse_args()
     results_folder = Path(args.results_folder).resolve()
     assert results_folder.is_dir(), f"No directory at {results_folder}"
     template = args.template
     overwrite = args.overwrite
-    
+
     '''DEBUG
-    results_folder = Path.home() / 'MRI/TractFlow_workspace/RNT_decoding/results'
+    results_folder = Path.home() / \
+        'MRI/TractFlow_workspace/RNT_decoding/results'
     template = MNI_f
     overwrite = False
     '''
@@ -138,11 +132,10 @@ if __name__ == '__main__':
             f"{sub}__t1_warped.nii.gz"
         if regT1_f.is_file():
             regt1_fs.append(regT1_f)
-    
+
     # Calculate warping parameters
     warp_MNI_T1(regt1_fs, template=template, overwrite=overwrite)
 
     # Apply warp to DTI and FODF metrics files to standardize
     apply_warp(regt1_fs, template=template, metric_files=metric_files,
                overwrite=overwrite)
-

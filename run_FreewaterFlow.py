@@ -34,13 +34,16 @@ import numpy as np
 if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
-        prog = 'run_FreewaterFlow',
-        description = 'Run FreewaterFlow pipeline')
-    
+        prog='run_FreewaterFlow',
+        description='Run FreewaterFlow pipeline')
+
     parser.add_argument('tf_results_folder', help='TractFlow results folder')
     parser.add_argument('--main_nf',
                         default=(Path.home() / 'freewater_flow' / 'main.nf'),
                         help='freewater_flow main.nf file')
+    parser.add_argument('--b_thr',
+                        help='Limit value to consider that a b-value is on' +
+                        ' an existing shell. The default is 40.')
     parser.add_argument('--copy_local', action='store_true',
                         help='Copy local working place')
     parser.add_argument('--workplace', default=(Path.home() / 'FWFlow_work'),
@@ -51,6 +54,7 @@ if __name__ == '__main__':
     tf_results_folder = Path(args.tf_results_folder).resolve()
     assert tf_results_folder.is_dir(), f"No directory at {tf_results_folder}"
     main_nf = args.main_nf
+    b_thr = args.b_thr
     copy_local = args.copy_local
     workplace = args.workplace
     if workplace is not None:
@@ -58,7 +62,8 @@ if __name__ == '__main__':
     overwrite = args.overwrite
 
     '''DEBUG
-    tf_results_folder = Path.home() / 'MRI/TractFlow_workspace/RNT_decoding/results'
+    tf_results_folder = Path.home() / \
+        'MRI/TractFlow_workspace/DTI_AdolescentData/results'
     main_nf = Path.home() / 'freewater_flow' / 'main.nf'
     copy_local = False
     workplace = None
@@ -84,7 +89,7 @@ if __name__ == '__main__':
 
     # --- Prepare input files -------------------------------------------------
     wd0 = tf_results_folder.parent
-    
+
     fwflow_input_dir = wd0 / 'fwflow_input'
     if fwflow_input_dir.is_dir():
         shutil.rmtree(fwflow_input_dir)
@@ -95,29 +100,32 @@ if __name__ == '__main__':
                      'bvec': ('Eddy_Topup', '__dwi_eddy_corrected.bvec'),
                      'brain_mask.nii.gz': ('Extract_B0',
                                            '__b0_mask_resampled.nii.gz')
-    }
+                     }
 
     print('Copy tractflow results for freewater_flow')
     excld_subj = []
     for sub_dir in sub_dirs:
         if not sub_dir.is_dir():
             continue
-        
+
         sub = sub_dir.name
         dst_dir = fwflow_input_dir / sub
         if not dst_dir.is_dir():
             dst_dir.mkdir()
-        
+
         for dst_pat, src_pat in file_patterns.items():
             dst_f = dst_dir / dst_pat
             src_f = sub_dir / src_pat[0] / f"{sub}{src_pat[1]}"
             if not src_f.is_file():
-                print(f"Not found {src_f} for {dst_f.name}")
-                shutil.rmtree(dst_dir)
-                excld_subj.append(sub_dir)
-                break
+                src_f = sub_dir / src_pat[0].replace('_Topup', '') / \
+                    f"{sub}{src_pat[1]}"
+                if not src_f.is_file():
+                    print(f"Not found {src_f} for {dst_f.name}")
+                    shutil.rmtree(dst_dir)
+                    excld_subj.append(sub_dir)
+                    break
             dst_f.symlink_to(src_f)
-        
+
     sub_dirs = np.setdiff1d(sub_dirs, excld_subj)
 
     # --- Prepare local workplace ---------------------------------------------
@@ -132,8 +140,9 @@ if __name__ == '__main__':
         workplace = wd0
 
     # --- Run freewater_flow --------------------------------------------------
-    cmd = f"nextflow run -bg {main_nf} --input {fwflow_input_dir}"
-    cmd += f" -w q"
+    cmd = f"nextflow run -bg {main_nf} --input {fwflow_input_dir} -w q"
+    if b_thr is not None:
+        cmd += f" --bthr {b_thr}"
     try:
         print('-' * 80)
         print(f"Run {cmd} at {workplace} in background.")
@@ -172,12 +181,12 @@ if __name__ == '__main__':
             out = subprocess.check_output(shlex.split(cmd))
         except Exception:
             break
-        
+
         time.sleep(10)
 
-    # --- Copy back ------------------------------------------------------------
+    # --- Copy back -----------------------------------------------------------
     if copy_local:
-        cmd = f"rsync -rtvz --copy-links"
+        cmd = "rsync -rtvz --copy-links"
         cmd += " --include='results' --include='results/**'"
         cmd += " --include='fwflow_work' --include='fwflow_work/**'"
         cmd += f" --exclude='*' {workplace}/ {wd0}/"
@@ -186,7 +195,7 @@ if __name__ == '__main__':
         except Exception:
             print(f"Failed to run {cmd}")
             sys.exit()
-    
+
     # --- Copy the files for symlinks -----------------------------------------
     for sub_dir in sub_dirs:
         for ff in list(sub_dir.glob('*/*')):
@@ -195,4 +204,3 @@ if __name__ == '__main__':
                 src_f = ff.resolve()
                 ff.unlink()
                 shutil.copy(src_f, dst_f)
-
