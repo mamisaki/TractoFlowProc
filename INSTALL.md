@@ -51,9 +51,13 @@ cd
 git clone https://github.com/mmisaki/TractFlowProc
 ```
 
-## Install c3d
+## Install c3d and connectome workbench for converting ANTs warp to FSL
 http://www.nitrc.org/frs/downloadlink.php/7073
 ```
+cd
+tar zxvf Dwonload/c3d-1.0.0-Linux-x86_64.tar.gz
+cd bin
+ln -sf ~/c3d-1.0.0-Linux-x86_64/c3d_affine_tool ./
 
-
+sudo apt install connectome-workbench
 ```
