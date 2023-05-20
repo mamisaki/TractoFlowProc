@@ -50,3 +50,10 @@ docker pull scilus/scilus:1.4.2
 cd
 git clone https://github.com/mmisaki/TractFlowProc
 ```
+
+## Install c3d
+http://www.nitrc.org/frs/downloadlink.php/7073
+```
+
+
+```
