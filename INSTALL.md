@@ -26,7 +26,7 @@ conda create -n tractflow python=3.10 pip hdf5=1.12 cython numpy -c anaconda
 conda activate tractflow
 cd ~/scilpy
 pip install -e .
-pip antspyx
+pip install antspyx
 ```
 
 ## Download nextflow
