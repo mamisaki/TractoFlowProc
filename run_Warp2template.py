@@ -114,7 +114,7 @@ if __name__ == '__main__':
 
     '''DEBUG
     results_folder = Path.home() / \
-        'MRI/TractFlow_workspace/RNT_decoding/results'
+        'MRI/TractFlow_workspace/DTI_AdolescentData/results'
     template = MNI_f
     overwrite = False
     '''

@@ -13,17 +13,19 @@ import shlex
 import subprocess
 import shutil
 from socket import gethostname
+
 import numpy as np
 from tqdm import tqdm
 import time
-
 from mproc import run_multi_shell
+import ants
+from ants_run import ants_registration
 
 if '__file__' not in locals():
     __file__ = 'run_bedpostx.py'
 
 script_dir = Path(__file__).resolve().parent
-MNI_f = script_dir / 'MNI152_T1_2mm_brain.nii.gz'
+MNI_f = script_dir / 'MNI152_T1_1mm_brain.nii.gz'
 
 
 # %% arrange_input_data =======================================================
@@ -37,10 +39,13 @@ def arrange_input_data(sub_dirs, work_dir, overwrite=False):
         'bvals': 'Eddy_Topup/{}__bval_eddy',
         'bvecs': 'Eddy_Topup/{}__dwi_eddy_corrected.bvec',
         'data.nii.gz': 'Compute_FreeWater/{}__dwi_fw_corrected.nii.gz',
-        'nodif_brain.nii.gz': 'Extract_B0/{}__b0_resampled.nii.gz',
         'nodif_brain_mask.nii.gz': 'Extract_B0/{}__b0_mask_resampled.nii.gz',
-        'T1.nii.gz': 'Resample_T1/{}__t1_resampled.nii.gz',
-        'T1_brain.nii.gz': 'Bet_T1/{}__t1_bet.nii.gz'
+        'T1_brain.nii.gz': 'Register_T1/{}__t1_warped.nii.gz',
+        'DTI_AD.nii.gz': 'FW_Corrected_Metrics/{}__fw_corr_ad.nii.gz',
+        'DTI_FA.nii.gz': 'FW_Corrected_Metrics/{}__fw_corr_fa.nii.gz',
+        'DTI_GA.nii.gz': 'FW_Corrected_Metrics/{}__fw_corr_ga.nii.gz',
+        'DTI_MD.nii.gz': 'FW_Corrected_Metrics/{}__fw_corr_md.nii.gz',
+        'DTI_RD.nii.gz': 'FW_Corrected_Metrics/{}__fw_corr_rd.nii.gz',
     }
 
     # Link files
@@ -49,9 +54,9 @@ def arrange_input_data(sub_dirs, work_dir, overwrite=False):
             sub_dirs, desc=f'Copying data for bedpostx input to {work_dir}'):
         sub = src_root.name
 
-        sub_input = work_dir / sub
-        if not sub_input.is_dir():
-            sub_input.mkdir()
+        dst_dir = work_dir / sub
+        if not dst_dir.is_dir():
+            dst_dir.mkdir()
 
         # Copy files
         for dst_name, src_name in srcfiles.items():
@@ -61,26 +66,35 @@ def arrange_input_data(sub_dirs, work_dir, overwrite=False):
                     src_name.format(sub).replace('_Topup', '')
 
             if not src_f.is_file():
-                shutil.rmtree(sub_input)
+                shutil.rmtree(dst_dir)
                 break
 
-            dest_f = sub_input / dst_name
+            dest_f = dst_dir / dst_name
             if dest_f.is_file() or dest_f.is_symlink():
                 dest_f.unlink()
-            dest_f.symlink_to(os.path.relpath(src_f, sub_input))
 
-        if not sub_input.is_dir():
+            if dst_name == 'template2orig_0GenericAffine.mat':
+                aff_tr = ants.read_transform(src_f)
+                ants.write_transform(aff_tr, dest_f)
+            else:
+                dest_f.symlink_to(os.path.relpath(src_f, dst_dir))
+
+            if '.nii.gz' in dst_name and 'Warp' not in dst_name:
+                cmd = f'3drefit -view orig -space ORIG {dest_f}'
+                subprocess.check_call(shlex.split(cmd))
+
+        if not dst_dir.is_dir():
             continue
 
         # Check data
-        cmd = f"bedpostx_datacheck {sub_input}"
+        cmd = f"bedpostx_datacheck {dst_dir}"
         try:
             subprocess.check_call(shlex.split(cmd), stdout=subprocess.PIPE)
         except Exception as e:
             print(e)
             continue
 
-        in_dirs.append(sub_input)
+        in_dirs.append(dst_dir)
 
     return in_dirs
 
@@ -88,82 +102,68 @@ def arrange_input_data(sub_dirs, work_dir, overwrite=False):
 # %% standardize_to_MNI =======================================================
 def standardize_to_MNI(bpx_sub_dirs, overwrite=False):
 
-    cmd_lines = {
-        '{xfms_dir}/diff2str.mat':
-            'flirt -in {nodif_brain} -ref {T1_brain}'
-            ' -omat {xfms_dir}/diff2str.mat -searchrx -180 180'
-            ' -searchry -180 180 -searchrz -180 180 -dof 6 -cost corratio',
-        '{xfms_dir}/str2diff.mat':
-            'convert_xfm -omat {xfms_dir}/str2diff.mat'
-            ' -inverse {xfms_dir}/diff2str.mat',
-        '{xfms_dir}/str2standard.mat':
-            'flirt -in {T1_brain} -ref {MNI} -omat {xfms_dir}/str2standard.mat'
-            ' -searchrx -180 180 -searchry -180 180 -searchrz -180 180 -dof 12'
-            ' -cost corratio',
-        '{xfms_dir}/standard2str.mat':
-            'convert_xfm -omat {xfms_dir}/standard2str.mat'
-            ' -inverse {xfms_dir}/str2standard.mat',
-        '{xfms_dir}/diff2standard.mat':
-            'convert_xfm -omat {xfms_dir}/diff2standard.mat'
-            ' -concat {xfms_dir}/str2standard.mat {xfms_dir}/diff2str.mat',
-        '{xfms_dir}/standard2diff.mat':
-            'convert_xfm -omat {xfms_dir}/standard2diff.mat'
-            ' -inverse {xfms_dir}/diff2standard.mat',
-        '{xfms_dir}/str2standard_warp.nii.gz':
-            'fnirt --in={T1} --aff={xfms_dir}/str2standard.mat'
-            ' --cout={xfms_dir}/str2standard_warp --config=T1_2_MNI152_2mm',
-        '{xfms_dir}/standard2str_warp.nii.gz':
-            'invwarp -w {xfms_dir}/str2standard_warp'
-            ' -o {xfms_dir}/standard2str_warp -r {T1_brain}',
-        '{xfms_dir}/diff2standard_warp.nii.gz':
-            'convertwarp -o {xfms_dir}/diff2standard_warp -r {MNI}'
-            ' -m {xfms_dir}/diff2str.mat -w {xfms_dir}/str2standard_warp',
-        '{xfms_dir}/standard2diff_warp.nii.gz':
-            'convertwarp -o {xfms_dir}/standard2diff_warp'
-            ' -r {nodif_brain_mask} -w {xfms_dir}/standard2str_warp'
-            ' --postmat={xfms_dir}/str2diff.mat'
-    }
-
-    Cmds = []
-    JobNames = []
-    for subdir in bpx_sub_dirs:
+    for subdir in tqdm(bpx_sub_dirs, desc='Standardize to MNI'):
         # Set source files
-        wd = subdir.parent
         sub = subdir.name.replace('.bedpostX', '')
-        params = {
-            'xfms_dir': (subdir / 'xfms').relative_to(wd),
-            'MNI': MNI_f,
-            'nodif_brain': Path(sub) / 'nodif_brain.nii.gz',
-            'nodif_brain_mask': Path(sub) / 'nodif_brain_mask.nii.gz',
-            'T1_brain': Path(sub) / 'T1_brain.nii.gz',
-            'T1': Path(sub) / 'T1.nii.gz'
-        }
+        xfms_dir = (subdir / 'xfms')
 
-        # Check source files
-        srcfs = np.array([wd / ff for ff in params.values()])
-        fexist = np.array([ff.is_dir() or ff.is_file() for ff in srcfs])
-        f_notfound = srcfs[~fexist]
-        if len(f_notfound):
-            print("Not found {f_notfound}")
-            continue
+        t1_f = subdir.parent / sub / 'T1_brain.nii.gz'
+        standard2diff_ANTs_mat = xfms_dir / 'standard2diff_0GenericAffine.mat'
+        standard2diff_ANTs_wrp = xfms_dir / 'standard2diff_1Warp.nii.gz'
+        diff2standard_ANTs_wrp = xfms_dir / 'standard2diff_1InverseWarp.nii.gz'
 
-        cmd_chain = []
-        for dst, cmdtmp in cmd_lines.items():
-            dst_f = dst.format(**params)
-            if (wd / dst_f).is_file() and not overwrite:
-                continue
+        if not standard2diff_ANTs_mat.is_file() or \
+                not standard2diff_ANTs_wrp.is_file() or overwrite:
+            # Run ANTs registration: template_f -> t1
 
-            cmd = cmdtmp.format(**params)
-            cmd_chain.append(cmd)
+            _ = ants_registration(t1_f, MNI_f, f"{xfms_dir}/standard2diff_",
+                                  verbose=False)
 
-        if len(cmd_chain):
-            cmd_chain = [f'cd {wd}'] + cmd_chain
-            cmd = ' && '.join(cmd_chain)
-            Cmds.append(cmd)
-            JobNames.append(f"Stabdadize_{sub}")
+            tx = ants.read_transform(standard2diff_ANTs_mat)
+            ants.write_transform(tx, standard2diff_ANTs_mat)
 
-    if len(Cmds):
-        run_multi_shell(Cmds, JobNames)
+        standard2diff_mat = xfms_dir / 'standard2diff.mat'
+        if not standard2diff_mat.is_file() or overwrite:
+            cmd = f"c3d_affine_tool -ref {t1_f}"
+            cmd += f" -src {MNI_f} -itk {standard2diff_ANTs_mat}"
+            cmd += f" -ras2fsl -o {standard2diff_mat}"
+            subprocess.check_call(shlex.split(cmd))
+
+        diff2standard_mat = xfms_dir / 'diff2standard.mat'
+        if not diff2standard_mat.is_file() or overwrite:
+            cmd = f"convert_xfm -omat {diff2standard_mat}"
+            cmd += f" -inverse {standard2diff_mat}"
+            subprocess.check_call(shlex.split(cmd))
+
+        diff2standard_warp = xfms_dir / 'diff2standard_warp.nii.gz'
+        if not diff2standard_warp.is_file() or overwrite:
+            cmd = 'wb_command -convert-warpfield'
+            cmd += f" -from-itk {diff2standard_ANTs_wrp}"
+            cmd += f" -to-fnirt {diff2standard_warp} {t1_f}"
+            subprocess.check_call(shlex.split(cmd))
+
+        standard2diff_warp = xfms_dir / 'standard2diff_warp.nii.gz'
+        if not standard2diff_warp.is_file() or overwrite:
+            cmd = 'wb_command -convert-warpfield'
+            cmd += f" -from-itk {standard2diff_ANTs_wrp}"
+            cmd += f" -to-fnirt {standard2diff_warp} {t1_f}"
+            subprocess.check_call(shlex.split(cmd))
+
+        diff2standard = xfms_dir / 'diff2standard.nii.gz'
+        if not diff2standard.is_file() or overwrite:
+            cmd = f"convertwarp --ref={MNI_f}"
+            cmd += f" --warp1={diff2standard_warp}"
+            cmd += f" --postmat={diff2standard_mat}"
+            cmd += f" --out={diff2standard}"
+            subprocess.check_call(shlex.split(cmd))
+
+        standard2diff = xfms_dir / 'standard2diff.nii.gz'
+        if not standard2diff.is_file() or overwrite:
+            cmd = f"convertwarp --ref={MNI_f}"
+            cmd += f" --premat={standard2diff_mat}"
+            cmd += f" --warp1={standard2diff_warp}"
+            cmd += f" --out={standard2diff}"
+            subprocess.check_call(shlex.split(cmd))
 
 
 # %% __main__ =================================================================

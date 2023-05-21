@@ -20,29 +20,32 @@ import numpy as np
 if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
-        prog = 'run_TractFlow',
-        description = 'Run TractFlow pipeline')
-    
+        prog='run_TractFlow',
+        description='Run TractFlow pipeline')
+
     parser.add_argument('input', help='input folder')
     parser.add_argument('--use_cuda', action='store_true',
                         help='Use eddy_cuda for Eddy process')
     parser.add_argument('--fully_reproducible', action='store_true',
-                        help='All the parameters will be set to have 100% reproducible')
+                        help='All the parameters will be set to have'
+                        ' 100% reproducible')
     parser.add_argument('--ABS', action='store_true',
-                        help='TractoFlow-ABS (Atlas Based Segmentation) is used.')
+                        help='TractoFlow-ABS (Atlas Based Segmentation)'
+                        ' is used.')
     parser.add_argument('--fs', help='FreeSurfer output folder')
     parser.add_argument('--copy_local', action='store_true',
                         help='Copy local working place')
     parser.add_argument('--workplace', help='Local working place')
     parser.add_argument('--with_docker', action='store_true',
                         help='with docker')
-    parser.add_argument('--processes', help='The number of parallel processes to launch.')
+    parser.add_argument('--processes', help='The number of parallel processes'
+                        ' to launch.')
     parser.add_argument('--overwrite', action='store_true', help='Overwrite')
 
     args = parser.parse_args()
     input_orig = Path(args.input).resolve()
     assert input_orig.is_dir(), f"No directory at {input_orig}"
-    
+
     use_cuda = args.use_cuda
     fully_reproducible = args.fully_reproducible
     ABS = args.ABS
@@ -56,9 +59,10 @@ if __name__ == '__main__':
     with_docker = args.with_docker
     processes = args.processes
     overwrite = args.overwrite
-    
-    '''DEBUG
-    input_orig = Path.home() / 'MRI' / 'TractFlow_workspace' / 'RNT_decoding' / 'input'
+
+    ''' DEBUG
+    input_orig = Path.home() / 'MRI' / 'TractFlow_workspace' / 'RNT_decoding' \
+        / 'input'
     use_cuda = False
     fully_reproducible = True
     ABS = False
@@ -68,7 +72,7 @@ if __name__ == '__main__':
     processes = None
     overwrite = False
     '''
-    
+
     # --- Find unprocessed data -----------------------------------------------
     sub_dirs = [sub_dir for sub_dir in input_orig.glob('*')
                 if sub_dir.is_dir()]
@@ -92,7 +96,7 @@ if __name__ == '__main__':
     if tractflow_input_dir.is_dir():
         shutil.rmtree(tractflow_input_dir)
     tractflow_input_dir.mkdir()
-    
+
     print('Copy tractflow input files')
     for sub_dir in sub_dirs:
         if not sub_dir.is_dir():
@@ -102,7 +106,7 @@ if __name__ == '__main__':
         dst_dir = tractflow_input_dir / sub
         if not dst_dir.is_dir():
             dst_dir.mkdir()
-        
+
         for src_f in sub_dir.glob('*'):
             if not src_f.is_file():
                 continue
@@ -135,7 +139,7 @@ if __name__ == '__main__':
         except Exception:
             print(f"Failed to rsync {wd0} to {workplace}")
             sys.exit()
-        
+
         tractflow_input_dir = workplace / tractflow_input_dir.name
         wd = workplace
 
@@ -152,7 +156,7 @@ if __name__ == '__main__':
 
     if fully_reproducible:
         profile.append('fully_reproducible')
-    
+
     if ABS:
         profile.append('ABS')
 
@@ -169,7 +173,7 @@ if __name__ == '__main__':
         print(f"Failed to run {cmd}")
         sys.exit()
 
-    # --- Copy back ------------------------------------------------------------
+    # --- Copy back -----------------------------------------------------------
     if copy_local:
         cmd = f"rsync -auvx {workplace}/ {wd0}/"
         try:
@@ -177,4 +181,3 @@ if __name__ == '__main__':
         except Exception:
             print(f"Failed to run {cmd}")
             sys.exit()
-
