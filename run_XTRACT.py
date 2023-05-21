@@ -76,7 +76,7 @@ if __name__ == '__main__':
     # Check if the job is done
     done_subj = []
     for sub_dir in SUB_DIRS:
-        last_f = res_dir / 'tracts' / 'vof_r' / 'densityNorm.nii.gz'
+        last_f = sub_dir / 'stats.csv'
         if last_f.is_file() and not overwrite:
             done_subj.append(sub_dir)
     SUB_DIRS = np.setdiff1d(SUB_DIRS, done_subj)
