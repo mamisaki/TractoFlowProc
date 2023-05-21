@@ -115,7 +115,11 @@ The results are stored in '~/TractFlow_workspace/FDT/\*.bedpostX' foldres.
 
 ### XTRACT
 [XTRACT](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/XTRACT)(cross-species tractography) can be used to automatically extract a set of carefully dissected tracts in human (neonates and adults) and macaques. It can also be used to define one's own tractography protocols where all the user needs to do is to define a set of masks in standard space (e.g. MNI152).  
-
+```
+conda activate tractflow
+cd ~/TractFlowProc
+nohup ./run_XTRACT.py --gpu ~/TractFlow_workspace/FDT > nohup_xtract.out &
+```
 
 ### PROBTRACKX
 [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres) produces sample streamlines, by starting from some seed and then iterate between (1) drawing an orientation from the voxel-wise bedpostX distributions, (2) taking a step in this direction, and (3) checking for any termination criteria. These sample streamlines can then be used to build up a histogram of how many streamlines visited each voxel or the number of streamlines connecting specific brain regions. This streamline distribution can be thought of as the posterior distribution on the streamline location or the connectivity distribution.  
