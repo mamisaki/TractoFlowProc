@@ -20,3 +20,8 @@ pull_data_RNTDecoding.py
 launch.json
 clean_docker
 *.sif
+*.log
+*.pid
+nohup*
+.nextflow/*
+*.zip

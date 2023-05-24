@@ -8,11 +8,11 @@ https://tractoflow-documentation.readthedocs.io/en/latest/index.html
 # %% import ===================================================================
 import argparse
 from pathlib import Path
-import os
 import shlex
 import subprocess
 import sys
 import shutil
+import time
 import numpy as np
 
 
@@ -33,8 +33,6 @@ if __name__ == '__main__':
                         help='TractoFlow-ABS (Atlas Based Segmentation)'
                         ' is used.')
     parser.add_argument('--fs', help='FreeSurfer output folder')
-    parser.add_argument('--copy_local', action='store_true',
-                        help='Copy local working place')
     parser.add_argument('--workplace', help='Local working place')
     parser.add_argument('--with_docker', action='store_true',
                         help='with docker')
@@ -52,21 +50,20 @@ if __name__ == '__main__':
     fs = args.fs
     if ABS and fs is None:
         fs = input_orig.parent / 'freesurfer'
-    copy_local = args.copy_local
     workplace = args.workplace
-    if copy_local and workplace is not None:
+    if workplace is not None:
         workplace = Path(workplace).resolve()
+
     with_docker = args.with_docker
     processes = args.processes
     overwrite = args.overwrite
 
     ''' DEBUG
-    input_orig = Path.home() / 'MRI' / 'TractFlow_workspace' / 'RNT_decoding' \
-        / 'input'
+    input_orig = Path.home() / 'MRI' / 'TractFlow_workspace' / \
+        'DTI_AdolescentData' / 'input_AN'
     use_cuda = False
     fully_reproducible = True
     ABS = False
-    copy_local = False
     workplace = None
     with_docker = True
     processes = None
@@ -92,12 +89,17 @@ if __name__ == '__main__':
     # --- Prepare input files -------------------------------------------------
     wd0 = input_orig.parent
 
-    tractflow_input_dir = input_orig.parent / 'tractflow_input'
-    if tractflow_input_dir.is_dir():
-        shutil.rmtree(tractflow_input_dir)
+    if workplace is None:
+        workplace = Path.home() / 'tractflow_work'
+
+    if workplace.is_dir():
+        shutil.rmtree(workplace)
+    workplace.mkdir()
+
+    tractflow_input_dir = workplace / 'tractflow_input'
     tractflow_input_dir.mkdir()
 
-    print('Copy tractflow input files')
+    print('Link tractflow input files')
     for sub_dir in sub_dirs:
         if not sub_dir.is_dir():
             continue
@@ -112,36 +114,6 @@ if __name__ == '__main__':
                 continue
             dst_f = dst_dir / src_f.name
             dst_f.symlink_to(src_f)
-
-    # --- Copy to local working place -----------------------------------------
-    if copy_local:
-        if workplace is None:
-            workplace = Path.home() / 'TractFlowWork_local'
-
-        if not workplace.is_dir():
-            try:
-                os.makedirs(workplace)
-            except Exception:
-                print(f"Failed to create {workplace}")
-                sys.exit()
-
-        cmd = f"rsync -auvz --include='{tractflow_input_dir.name}'"
-        cmd += f" --include='{tractflow_input_dir.name}/**'"
-        if not overwrite:
-            if (wd0 / 'work').is_dir():
-                cmd += " --include='work' --include='work/**'"
-            if (wd0 / 'results').is_dir():
-                cmd += " include='results' --include='results/**'"
-        cmd += " --exclude='*'"
-        cmd += f" {wd0}/ {workplace}/"
-        try:
-            subprocess.check_call(shlex.split(cmd))
-        except Exception:
-            print(f"Failed to rsync {wd0} to {workplace}")
-            sys.exit()
-
-        tractflow_input_dir = workplace / tractflow_input_dir.name
-        wd = workplace
 
     # --- Run TractFlow -------------------------------------------------------
     cmd = f"nextflow run -bg tractoflow -r 2.4.1 --input {tractflow_input_dir}"
@@ -168,16 +140,45 @@ if __name__ == '__main__':
     cmd += ' -resume'
 
     try:
-        subprocess.check_call(shlex.split(cmd), cwd=wd)
+        subprocess.check_call(shlex.split(cmd), cwd=workplace)
     except Exception:
         print(f"Failed to run {cmd}")
         sys.exit()
 
-    # --- Copy back -----------------------------------------------------------
-    if copy_local:
-        cmd = f"rsync -auvx {workplace}/ {wd0}/"
+    # --- Wait for complete ---------------------------------------------------
+    tf_results_folder = workplace / 'results'
+
+    while True:
+        # Check if all the result filese are made
+        done_subj = []
+        for sub_dir in sub_dirs:
+            sub = sub_dir.name
+            results_dir = tf_results_folder.parent / 'results' / sub
+            last_f = results_dir / 'PFT_Tracking' / \
+                f"{sub}__pft_tracking_prob_wm_seed_0.trk"
+            if last_f.is_file() and not overwrite:
+                done_subj.append(sub_dir)
+
+        last_dirs = np.setdiff1d(sub_dirs, done_subj)
+        if len(last_dirs) == 0:
+            break
+
+        # Check if the process is running
+        cmd = "pgrep -f 'run -bg tractoflow'"
         try:
-            subprocess.check_call(shlex.split(cmd))
+            out = subprocess.check_output(shlex.split(cmd))
         except Exception:
-            print(f"Failed to run {cmd}")
-            sys.exit()
+            break
+
+        time.sleep(10)
+
+    # --- Copy back -----------------------------------------------------------
+    shutil.rmtree(tractflow_input_dir)
+    cmd = f"rsync -auvx {workplace}/ {wd0}/"
+    try:
+        subprocess.check_call(shlex.split(cmd))
+        shutil.rmtree(workplace)
+
+    except Exception:
+        print(f"Failed to run {cmd}")
+        sys.exit()
