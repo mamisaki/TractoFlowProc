@@ -101,16 +101,14 @@ Run commnd below,
 if GPU can be used,
 ```
 cd ~/TractFlowProc
-nohup ./run_bedpostX.py --gpu --stdize ~/TractFlow_workspace/results > nohup_bpx.out &
+nohup ./run_bedpostX.py --gpu ~/TractFlow_workspace/results > nohup_bpx.out &
 ```
 
 or if no GPU is available,
 ```
 cd ~/TractFlowProc
-nohup ./run_bedpostX.py --stdize ~/TractFlow_workspace/results > nohup_bpx.out &
+nohup ./run_bedpostX.py ~/TractFlow_workspace/results > nohup_bpx.out &
 ```
-With '--stdize' option, MNI warping parameters are calculated and srored in '\*.bedpostX/xfms' folder.  
-
 The results are stored in '~/TractFlow_workspace/FDT/\*.bedpostX' foldres.  
 
 ### XTRACT
