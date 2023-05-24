@@ -94,7 +94,7 @@ nohup ./run_warp2template.py ~/TractFlow_workspace/results > nohup_wrp.out &
 The result files are saved in the 'Standardize_*' folders in the results folder.
 
 ## 7. FDT processing
-Running a probabilistic fiber tracking analysis with [FSL FDT tools](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide), [BEDPOSTX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#BEDPOSTX), [XTRACT](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/XTRACT), and [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres). 
+Running a probabilistic fiber tracking analysis with [FSL FDT tools](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide), [BEDPOSTX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#BEDPOSTX), including [XTRACT](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/XTRACT), and [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres). 
 
 ### BEDPOSTX
 Run commnd below, 
