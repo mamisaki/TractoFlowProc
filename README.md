@@ -100,13 +100,13 @@ Running a probabilistic fiber tracking analysis with [FSL FDT tools](https://fsl
 Run commnd below, 
 if GPU can be used,
 ```
+conda activate tractflow
 cd ~/TractFlowProc
 nohup ./run_bedpostX.py --gpu ~/TractFlow_workspace/results > nohup_bpx.out &
 ```
 
 or if no GPU is available,
 ```
-cd ~/TractFlowProc
 nohup ./run_bedpostX.py ~/TractFlow_workspace/results > nohup_bpx.out &
 ```
 The results are stored in '~/TractFlow_workspace/FDT/\*.bedpostX' foldres.  
