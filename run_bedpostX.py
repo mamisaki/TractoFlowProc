@@ -175,15 +175,12 @@ if __name__ == '__main__':
 
     parser.add_argument('results_folder', help='TractFlow results folder')
     parser.add_argument('--gpu', action='store_true', help='Use GPU')
-    parser.add_argument('--stdize', action='store_true',
-                        help='Standardize to MNI for XTRACT')
     parser.add_argument('--overwrite', action='store_true', help='Overwrite')
 
     args = parser.parse_args()
     results_folder = Path(args.results_folder).resolve()
     assert results_folder.is_dir(), f"No directory at {results_folder}"
     gpu = args.gpu
-    stdize = args.stdize
     overwrite = args.overwrite
 
     '''DEBUG
@@ -296,7 +293,6 @@ if __name__ == '__main__':
             pass
 
     # --- Standardization to MNI for XTRACT -----------------------------------
-    if stdize:
-        bpx_sub_dirs = [sub_dir for sub_dir in work_dir.glob('*.bedpostX')
-                        if sub_dir.is_dir()]
-        standardize_to_MNI(bpx_sub_dirs, overwrite=overwrite)
+    bpx_sub_dirs = [sub_dir for sub_dir in work_dir.glob('*.bedpostX')
+                    if sub_dir.is_dir()]
+    standardize_to_MNI(bpx_sub_dirs, overwrite=overwrite)
