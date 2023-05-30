@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
     ''' DEBUG
     input_orig = Path.home() / 'MRI' / 'TractFlow_workspace' / \
-        'DTI_AdolescentData' / 'input_AN'
+        'DTI_AdolescentData' / 'input_CW'
     use_cuda = False
     fully_reproducible = True
     ABS = False
@@ -73,18 +73,29 @@ if __name__ == '__main__':
     # --- Find unprocessed data -----------------------------------------------
     sub_dirs = [sub_dir for sub_dir in input_orig.glob('*')
                 if sub_dir.is_dir()]
+    required_files = ['bval', 'bvec', 'dwi.nii.gz', 't1.nii.gz']
 
     # Check if the job is done
-    done_subj = []
+    excld_subj = []
     for sub_dir in sub_dirs:
         sub = sub_dir.name
         results_dir = input_orig.parent / 'results' / sub
         last_f = results_dir / 'PFT_Tracking' / \
             f"{sub}__pft_tracking_prob_wm_seed_0.trk"
         if last_f.is_file() and not overwrite:
-            done_subj.append(sub_dir)
+            excld_subj.append(sub_dir)
 
-    sub_dirs = np.setdiff1d(sub_dirs, done_subj)
+        if not np.all([(sub_dir / ff).is_file() for ff in required_files]):
+            excld_subj.append(sub_dir)
+
+    sub_dirs = np.setdiff1d(sub_dirs, excld_subj)
+    if len(sub_dirs) == 0:
+        print("No remaining data to process:"
+              " 'PFT_Tracking/*__pft_tracking_prob_wm_seed_0.trk' exists"
+              " for all data with required source files.")
+        sys.exit()
+
+    print(f"{len(sub_dirs)} data will be processed.")
 
     # --- Prepare input files -------------------------------------------------
     wd0 = input_orig.parent
@@ -174,7 +185,7 @@ if __name__ == '__main__':
 
     # --- Copy back -----------------------------------------------------------
     shutil.rmtree(tractflow_input_dir)
-    cmd = f"rsync -auvx {workplace}/ {wd0}/"
+    cmd = f"rsync -rtuvz {workplace}/ {wd0}/"
     try:
         subprocess.check_call(shlex.split(cmd))
         shutil.rmtree(workplace)

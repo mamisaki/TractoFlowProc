@@ -133,7 +133,7 @@ if __name__ == '__main__':
     FS_SUBJ_DIR = input_folder.parent / 'freesurfer'
     copy_local = args.copy_local
     if copy_local and args.workplace is not None:
-        subjdir = {ath.home()} / 'freesurfer'
+        subjdir = {Path.home()} / 'freesurfer'
     else:
         subjdir = FS_SUBJ_DIR
     overwrite = args.overwrite
