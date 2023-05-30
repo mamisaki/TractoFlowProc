@@ -68,22 +68,7 @@ A working directory, '\~/TractFlow_workspace/fwflow_work', is also created.
 The command returns immediately, and the process runs in the background.  
 The process takes a very long time: > 10h for one subject. Multiple subjects are processed in parallel.  
 
-## 5. Result files
-Result files are stored in the ~/TractFlow_workspace/results/*subject* folders.  
-
-- DTI_Metrics/  
-    The axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [[Batchelor et al., 2005](https://onlinelibrary.wiley.com/doi/10.1002/mrm.20334)], mean diffusivity (md), radial diffusivity (rd), tensor, tensor norm [[Kindlmann et al., 2007](https://ieeexplore.ieee.org/abstract/document/4359059)], tensor eigenvalues, tensor eigenvectors, tensor mode, and color-FA are created.
-
-- FODF_Metrics/  
-    The fiber orientation distribution function (fODF) metrics computed are the total and maximum Apparent Fiber Density (AFD) [[Raffelt et al., 2012](https://www.sciencedirect.com/science/article/pii/S1053811911012092)], the Number of Fiber Orientation (NuFO) [[Dell’Acqua et al., 2013](https://onlinelibrary.wiley.com/doi/epdf/10.1002/hbm.22080)] and principal fODFs orientations (up to 5 per voxel).
-
-- FW_Corrected_Metrics/  
-    DTI metrics files with freewater correction are created in this folder.    
-    
-- Local_Tracking/  
-    *subject*__local_tracking_prob_wm_seeding_wm_mask_seed_0.trk  
-
-## 6. Standardize DTI and fODF metrics
+## 5. Standardize DTI and fODF metrics
 The run_warp2template.py script normalizes the DTI and fDOF metric files to MNI152 template space.  
 ```
 conda activate tractflow
@@ -93,7 +78,7 @@ nohup ./run_warp2template.py ~/TractFlow_workspace/results > nohup_wrp.out &
 
 The result files are saved in the 'Standardize_*' folders in the results folder.
 
-## 7. FDT processing
+## 6. FDT processing
 Running a probabilistic fiber tracking analysis with [FSL FDT tools](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide), including [BEDPOSTX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#BEDPOSTX), [XTRACT](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/XTRACT), and [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres). 
 
 ### BEDPOSTX
@@ -122,3 +107,23 @@ nohup ./run_XTRACT.py --gpu ~/TractFlow_workspace/FDT > nohup_xtract.out &
 ### PROBTRACKX
 [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres) produces sample streamlines, by starting from some seed and then iterate between (1) drawing an orientation from the voxel-wise bedpostX distributions, (2) taking a step in this direction, and (3) checking for any termination criteria. These sample streamlines can then be used to build up a histogram of how many streamlines visited each voxel or the number of streamlines connecting specific brain regions. This streamline distribution can be thought of as the posterior distribution on the streamline location or the connectivity distribution.  
 
+## 6. Collecting the result files in a single folder
+```
+conda activate tractflow
+cd ~/TractFlowProc
+./collect_all_results.py ~/TractFlow_workspace
+```
+
+Result files are stored in the ~/TractFlow_workspace/results/*subject* folders.  
+
+- DTI_Metrics/  
+    The axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [[Batchelor et al., 2005](https://onlinelibrary.wiley.com/doi/10.1002/mrm.20334)], mean diffusivity (md), radial diffusivity (rd), tensor, tensor norm [[Kindlmann et al., 2007](https://ieeexplore.ieee.org/abstract/document/4359059)], tensor eigenvalues, tensor eigenvectors, tensor mode, and color-FA are created.
+
+- FODF_Metrics/  
+    The fiber orientation distribution function (fODF) metrics computed are the total and maximum Apparent Fiber Density (AFD) [[Raffelt et al., 2012](https://www.sciencedirect.com/science/article/pii/S1053811911012092)], the Number of Fiber Orientation (NuFO) [[Dell’Acqua et al., 2013](https://onlinelibrary.wiley.com/doi/epdf/10.1002/hbm.22080)] and principal fODFs orientations (up to 5 per voxel).
+
+- FW_Corrected_Metrics/  
+    DTI metrics files with freewater correction are created in this folder.    
+    
+- Local_Tracking/  
+    *subject*__local_tracking_prob_wm_seeding_wm_mask_seed_0.trk  
