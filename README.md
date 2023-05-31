@@ -40,7 +40,7 @@ The script run_FreeSurfer.py processes t1.nii.gz in the input folder to create a
 cd ~/TractFlowProc
 nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input > nohup_FS.out &
 ```
-The process will take a very long time (almost a day for one subject, depending on the CPU). Multiple subjects are processed in parallel, and the number of simultaneous processes is '(number of CPU cores)//2'.  
+The process will take a very long time (almost a day for one subject, depending on the CPU). Multiple subjects can be processed in parallel, and the number of simultaneous processes is '(number of CPU cores)//2'.  
 The files processed by FreeSurfer are stored in the folder ~/TractFlow_workspace/freesurfer.  
 Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input folder.  
 
@@ -51,7 +51,7 @@ cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input --with_docker --fully_reproducible > nohup_tf.out &
 ```
 The command returns immediately, and the process runs in the background.  
-The process takes a very long time: > 10h for one subject. Multiple subjects are processed in parallel.  
+The process takes a very long time: > 10h for one subject. Multiple subjects can be processed in parallel, depnding on the number of CPU cores.  
 
 * Add '--ABS' option to run TractoFlow-ABS (See [2](#2-run-freesurfer-optional)).  
 
