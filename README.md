@@ -93,7 +93,7 @@ or if no GPU is available,
 ```
 nohup ./run_bedpostX.py ~/TractFlow_workspace/results > nohup_bpx.out &
 ```
-The results are stored in '~/TractFlow_workspace/FDT/\*.bedpostX' foldres.  
+The results are stored in '~/TractFlow_workspace/FDT/*subject*.bedpostX' foldres.  
 
 ### XTRACT
 [XTRACT](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/XTRACT)(cross-species tractography) can be used to automatically extract a set of carefully dissected tracts in human (neonates and adults) and macaques. It can also be used to define one's own tractography protocols where all the user needs to do is to define a set of masks in standard space (e.g. MNI152).  
