@@ -62,11 +62,10 @@ conda activate tractflow
 cd ~/TractFlowProc
 nohup ./run_FreewaterFlow.py ~/TractFlow_workspace/results > nohup_fwf.out &
 ```
-The 'results' folder of run_TractFlow.py should be passed as an argument. The input files for freewater_flow are created in 'fwflow_input' in '\~/TractFlow_workspace' (parent directory of the results folder).  
-A working directory, '\~/TractFlow_workspace/fwflow_work', is also created.
 
 The command returns immediately, and the process runs in the background.  
-The process takes a very long time: > 10h for one subject. Multiple subjects are processed in parallel.  
+The process takes a very long time: > 3h for one subject. Multiple subjects are processed in parallel.  
+The result files are saved in the 'FW_Corrected_Metrics' folder in the results/subject folder.
 
 ## 5. Standardize DTI and fODF metrics
 The run_warp2template.py script normalizes the DTI and fDOF metric files to MNI152 template space.  
@@ -76,7 +75,7 @@ cd ~/TractFlowProc
 nohup ./run_warp2template.py ~/TractFlow_workspace/results > nohup_wrp.out &
 ```
 
-The result files are saved in the 'Standardize_*' folders in the results folder.
+The result files are saved in the 'Standardize_*' folders in the results/subject folder.
 
 ## 6. FDT processing
 Running a probabilistic fiber tracking analysis with [FSL FDT tools](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide), including [BEDPOSTX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#BEDPOSTX), [XTRACT](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/XTRACT), and [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres). 
