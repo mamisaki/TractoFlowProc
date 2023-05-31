@@ -64,7 +64,7 @@ nohup ./run_FreewaterFlow.py ~/TractFlow_workspace/results > nohup_fwf.out &
 ```
 
 The command returns immediately, and the process runs in the background.  
-The process takes a very long time: > 3h for one subject. Multiple subjects are processed in parallel.  
+The process takes a very long time: > 3h for one subject. Multiple subjects are processed in parallel as far as memory allows (20G/subject required).  
 The result files are saved in the 'FW_Corrected_Metrics' folder in the results/subject folder.
 
 ## 5. Standardize DTI and fODF metrics
