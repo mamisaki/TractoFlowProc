@@ -19,6 +19,9 @@ https://cran.r-project.org/bin/linux/ubuntu/
 ## Install AFNI
 https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instructs/index.html
 
+## Install FSL
+https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation  
+
 ## Download scilpy git repositories
 ```
 cd
@@ -49,8 +52,6 @@ cd
 git clone https://github.com/scilus/freewater_flow
 docker pull scilus/scilus:1.4.2
 ```
-# Install FSL
-https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation  
 
 ## Install c3d and connectome workbench for converting ANTs warp to FSL
 Download c3d-1.0.0-Linux-x86_64.tar.gz from http://www.nitrc.org/frs/downloadlink.php/7073 into ~/Downloads  
