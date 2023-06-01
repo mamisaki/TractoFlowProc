@@ -46,8 +46,6 @@ docker pull scilus/scilus:1.4.2
 ```
 # Install FSL
 https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation  
-bedpostx_gpu  
-https://users.fmrib.ox.ac.uk/~moisesf/Bedpostx_GPU/Installation.html  
 
 ## Install c3d and connectome workbench for converting ANTs warp to FSL
 Download c3d-1.0.0-Linux-x86_64.tar.gz from http://www.nitrc.org/frs/downloadlink.php/7073 into ~/Downloads  
