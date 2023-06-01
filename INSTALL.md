@@ -27,6 +27,7 @@ git clone https://github.com/scilus/scilpy.git
 
 ## Install scilpy and antspyx in conda environment
 ```
+sudo apt install intel-mkl
 conda create -n tractflow python=3.10 pip hdf5=1.12 cython numpy psutil -c anaconda
 conda activate tractflow
 cd ~/scilpy
