@@ -13,6 +13,11 @@ See https://docs.docker.com/engine/install/
 ## Install FreeSurfer
 https://surfer.nmr.mgh.harvard.edu/fswiki/DownloadAndInstall
 
+## Install R
+https://cran.r-project.org/bin/linux/ubuntu/
+
+## Install AFNI
+https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instructs/index.html
 
 ## Download scilpy git repositories
 ```
