@@ -10,7 +10,7 @@ See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 ## Install docker
 See https://docs.docker.com/engine/install/
 
-### Install singurality
+## Install singurality
 https://docs.sylabs.io/guides/3.0/user-guide/quick_start.html#quick-installation-steps
 
 ## Install FreeSurfer
