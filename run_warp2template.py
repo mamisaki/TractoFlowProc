@@ -6,6 +6,8 @@ import argparse
 from pathlib import Path
 import shlex
 import subprocess
+from socket import gethostname
+import time
 
 from tqdm import tqdm
 from ants_run import ants_registration, ants_warp_resample
@@ -22,24 +24,6 @@ metric_files = {'DTI_Metrics': ('ad', 'fa', 'ga', 'md', 'rd'),
                     ('fw_corr_ad', 'fw_corr_fa', 'fw_corr_ga', 'fw_corr_md',
                      'fw_corr_rd')
                 }
-
-
-# %% warp_MNI_T1 ==============================================================
-def warp_MNI_T1(regt1_fs, template=MNI_f, overwrite=False):
-
-    for t1_f in tqdm(regt1_fs, desc='ANTs registration'):
-        work_dir = t1_f.parent.parent / 'Standardize_T1'
-        if not work_dir.is_dir():
-            work_dir.mkdir()
-
-        aff_f = work_dir / 'template2orig_0GenericAffine.mat'
-        invwrp_f = work_dir / 'template2orig_1InverseWarp.nii.gz'
-        if aff_f.is_file() and invwrp_f.is_file() and not overwrite:
-            continue
-
-        # Run ANTs registration: template_f -> t1
-        _ = ants_registration(t1_f, template, f"{work_dir}/template2orig_",
-                              verbose=False)
 
 
 # %% apply_warp ===============================================================
@@ -112,11 +96,14 @@ if __name__ == '__main__':
     template = args.template
     overwrite = args.overwrite
 
+    work_root = results_folder.parent
+
     '''DEBUG
     results_folder = Path.home() / \
         'MRI/TractFlow_workspace/DTI_AdolescentData/results'
     template = MNI_f
     overwrite = False
+    work_root = results_folder.parent
     '''
 
     # --- Get input data dirs -------------------------------------------------
@@ -133,9 +120,89 @@ if __name__ == '__main__':
         if regT1_f.is_file():
             regt1_fs.append(regT1_f)
 
-    # Calculate warping parameters
-    warp_MNI_T1(regt1_fs, template=template, overwrite=overwrite)
+    # --- Calculate warping parameters ----------------------------------------
+    for t1_f in tqdm(regt1_fs, desc='ANTs registration'):
+        work_dir = t1_f.parent.parent / 'Standardize_T1'
+        if not work_dir.is_dir():
+            work_dir.mkdir()
 
-    # Apply warp to DTI and FODF metrics files to standardize
-    apply_warp(regt1_fs, template=template, metric_files=metric_files,
-               overwrite=overwrite)
+        aff_f = work_dir / 'template2orig_0GenericAffine.mat'
+        invwrp_f = work_dir / 'template2orig_1InverseWarp.nii.gz'
+        if aff_f.is_file() and invwrp_f.is_file() and not overwrite:
+            continue
+
+        subj = work_dir.parent.name
+        IsRun = work_root / f"IsRun_ANTs_{subj}"
+        if IsRun.is_file():
+            continue
+
+        with open(IsRun, 'w') as fd:
+            fd.write(gethostname())
+            fd.write(time.ctime())
+
+        # Run ANTs registration: template_f -> t1
+        _ = ants_registration(t1_f, template, f"{work_dir}/template2orig_",
+                              verbose=False)
+
+        if IsRun.is_file():
+            IsRun.unlink()
+
+    # --- Apply warp to DTI and FODF metrics files to standardize -------------
+    for t1_f in tqdm(regt1_fs, desc='Apply warping'):
+        subj_root = t1_f.parent.parent
+
+        # Check if warping paramter files exist
+        Standardize_T1_dir = subj_root / 'Standardize_T1'
+        aff_f = Standardize_T1_dir / 'template2orig_0GenericAffine.mat'
+        invwrp_f = Standardize_T1_dir / 'template2orig_1InverseWarp.nii.gz'
+        if not aff_f.is_file() or not invwrp_f.is_file():
+            continue
+
+        IsRun = work_root / f"IsRun_ApplyWarp_{subj_root.name}"
+        if IsRun.is_file():
+            continue
+
+        # Apply warp
+        for metric_dir, metric in metric_files.items():
+            src_dir = subj_root / metric_dir
+            if not src_dir.is_dir():
+                continue
+
+            dst_dir = subj_root / f"Standardize_{metric_dir}"
+            if not dst_dir.is_dir():
+                dst_dir.mkdir()
+
+            for metric in metric:
+                src_f = src_dir / f"{subj_root.name}__{metric}.nii.gz"
+                if not src_f.is_file():
+                    print(f"Not found {src_f}.")
+                    continue
+
+                warped_f = dst_dir / \
+                    src_f.name.replace('.nii.gz', '_standard.nii.gz')
+                if warped_f.is_file() and not overwrite:
+                    continue
+
+                if not IsRun.is_file():
+                    with open(IsRun, 'w') as fd:
+                        fd.write(gethostname())
+                        fd.write(time.ctime())
+
+                # Apply warp with resample in fix_f space
+                warp_params = [str(aff_f), str(invwrp_f)]
+                whichtoinvert = [True, False]
+                out_f = warped_f
+                ants_warp_resample(
+                    template, src_f, warped_f, warp_params,
+                    interpolator='linear', imagetype=0,
+                    whichtoinvert=whichtoinvert, verbose=False)
+
+                try:
+                    cmd = f"3drefit -view tlrc -space MNI {out_f}"
+                    subprocess.check_call(shlex.split(cmd),
+                                          stderr=subprocess.PIPE)
+                except Exception:
+                    pass
+
+        if IsRun.is_file():
+            IsRun.unlink()

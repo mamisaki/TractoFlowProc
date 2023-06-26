@@ -25,8 +25,9 @@ import subprocess
 import sys
 import shutil
 import time
-import psutil
+from socket import gethostname
 
+import psutil
 import numpy as np
 
 
@@ -40,7 +41,8 @@ if __name__ == '__main__':
     parser.add_argument('tf_results_folder', help='TractFlow results folder')
     parser.add_argument('--workplace', help='Local working place')
     parser.add_argument('--num_proc', default=0, type=int,
-                        help='Maximum number of subjects processed at once')
+                        help='Maximum number of subjects'
+                        'processed simultaneously')
     parser.add_argument('--main_nf',
                         default=(Path.home() / 'freewater_flow' / 'main.nf'),
                         help='freewater_flow main.nf file')
@@ -55,7 +57,7 @@ if __name__ == '__main__':
 
     num_proc = args.num_proc
     num_proc_possible = max(int(np.round(psutil.virtual_memory().available /
-                                         (25 * 10e8))), 1)
+                                         (20 * 10e8))), 1)
     if num_proc == 0:
         num_proc = num_proc_possible
     else:
@@ -81,7 +83,7 @@ if __name__ == '__main__':
 
     if workplace is None:
         tmp_workplace = True
-        workplace = Path.home() / 'tractflow_work'
+        workplace = Path.home() / 'fwflow_work'
     else:
         tmp_workplace = False
 
@@ -109,11 +111,26 @@ if __name__ == '__main__':
             if last_f.is_file() and not overwrite:
                 done_subj.append(sub_dir)
 
+        # Check running process
+        for isrun in wd0.glob('IsRun_FWF_*'):
+            with open(isrun, 'r') as fd:
+                run_subjs = [tf_results_folder / subj
+                             for subj in fd.read().rstrip().split(',')]
+            done_subj.extend(run_subjs)
+
+        done_subj = np.unique(done_subj)
         sub_dirs = np.setdiff1d(sub_dirs, done_subj)
         if len(sub_dirs) == 0:
             break
 
+        # Process num_proc subjects at once
         sub_dirs = sub_dirs[:num_proc]
+
+        # Put IsRun
+        IsRun = wd0 / f'IsRun_FWF_{gethostname()}'
+        run_subjs = [d.name for d in sub_dirs]
+        with open(IsRun, 'w') as fd:
+            print(','.join(run_subjs), file=fd)
 
         # --- Prepare input files ---------------------------------------------
         if tmp_workplace and workplace.is_dir():
@@ -129,7 +146,7 @@ if __name__ == '__main__':
 
         print('Copy tractflow results for freewater_flow')
         excld_subj = []
-        for sub_dir in sub_dirs[:num_proc]:
+        for sub_dir in sub_dirs:
             if not sub_dir.is_dir():
                 continue
 
@@ -172,21 +189,14 @@ if __name__ == '__main__':
             done_subj = []
             for sub_dir in sub_dirs:
                 sub = sub_dir.name
-                results_dir = tf_results_folder.parent / 'results' / sub
+                results_dir = fwflow_input_dir.parent / 'results' / sub
                 last_f = results_dir / 'FW_Corrected_Metrics' / \
                     f"{sub}__fw_corr_tensor.nii.gz"
-                if last_f.is_file() and not overwrite:
-                    for ff in list(sub_dir.glob('*/*')):
-                        # Make symlink to the real file
-                        if ff.is_symlink():
-                            dst_f = ff
-                            src_f = ff.resolve()
-                            ff.unlink()
-                            shutil.copy(src_f, dst_f)
+                if last_f.is_file():
                     done_subj.append(sub_dir)
 
-            last_dirs = np.setdiff1d(sub_dirs, done_subj)
-            if len(last_dirs) == 0:
+            last_subs = np.setdiff1d(sub_dirs, done_subj)
+            if len(last_subs) == 0:
                 break
 
             # Check if the process is running
@@ -200,10 +210,12 @@ if __name__ == '__main__':
 
         # --- Copy back -------------------------------------------------------
         shutil.rmtree(fwflow_input_dir)
-        cmd = f"rsync -rtuvz {workplace}/ {wd0}/"
-        try:
-            subprocess.check_call(shlex.split(cmd))
-            shutil.rmtree(workplace)
+        cmd = "rsync -rtuvz --copy-links --exclude='.nextflow*' --exclude='q'"
+        cmd += f" --exclude='fwflow_input' {workplace}/ {wd0}/"
+        subprocess.run(shlex.split(cmd))
 
-        except Exception:
-            print(f"Failed to run {cmd}")
+        if IsRun.is_file():
+            IsRun.unlink()
+
+    if tmp_workplace and workplace.is_dir():
+        shutil.rmtree(workplace)
