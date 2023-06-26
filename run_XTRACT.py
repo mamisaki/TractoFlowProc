@@ -97,7 +97,7 @@ if __name__ == '__main__':
             continue
 
         cmd = f"xtract_stats -d {dti_dir} -xtract {sub_dir} -w {w} -r {r}"
-        cmd += ' -meas AD,FA,GA,MD,RD'
+        cmd += ' -meas vol,prob,length,FA,MD,AD,GA,RD'
         Cmds.append(cmd)
         JobNames.append(f"xtract_stats_{sub}")
 
