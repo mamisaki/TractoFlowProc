@@ -37,16 +37,16 @@ if __name__ == '__main__':
     parser.add_argument('FDT_folder', help='FDT results folder')
     parser.add_argument('--gpu', action='store_true', help='Use GPU')
     parser.add_argument('--seed_template',
-                        help='Seed mask in the template (MNI152) space.' +
-                        'Multiple seeds can be implemented in one file with' +
-                        'different values')
+                        help='Filename of the seed mask in the template' +
+                        ' (MNI152) space. Multiple seeds can be implemented' +
+                        ' in one file with different values')
     parser.add_argument('--overwrite', action='store_true', help='Overwrite')
 
     args = parser.parse_args()
     FDT_folder = Path(args.FDT_folder).resolve()
     assert FDT_folder.is_dir(), f"No directory at {FDT_folder}"
     gpu = args.gpu
-    seed_template = args.seed_template
+    seed_template = Path(args.seed_template)
     overwrite = args.overwrite
 
     '''DEBUG
