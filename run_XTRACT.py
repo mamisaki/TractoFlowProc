@@ -11,7 +11,10 @@ from pathlib import Path
 import shlex
 import subprocess
 import numpy as np
+from socket import gethostname
+import time
 
+from tqdm import tqdm
 from mproc import run_multi_shell
 
 if '__file__' not in locals():
@@ -53,20 +56,37 @@ if __name__ == '__main__':
         sub = sub_dir.name.replace('.bedpostX', '')
         res_dir = FDT_folder / f"{sub}.xtract"
         last_f = res_dir / 'tracts' / 'vof_r' / 'densityNorm.nii.gz'
+        IsRun = FDT_folder / f'IsRunning_XTRACT_{sub}'
         if last_f.is_file() and not overwrite:
+            done_subj.append(sub_dir)
+        elif IsRun.is_file():
             done_subj.append(sub_dir)
     SUB_DIRS = np.setdiff1d(SUB_DIRS, done_subj)
 
     # run xtract
-    for sub_dir in SUB_DIRS:
+    for sub_dir in tqdm(SUB_DIRS, desc='XTRACT'):
         sub = sub_dir.name.replace('.bedpostX', '')
+        IsRun = FDT_folder / f'IsRunning_XTRACT_{sub}'
+        if IsRun.is_file():
+            continue
+
         res_dir = FDT_folder / f"{sub}.xtract"
+        last_f = res_dir / 'tracts' / 'vof_r' / 'densityNorm.nii.gz'
+        if last_f.is_file() and not overwrite:
+            continue
+
+        with open(IsRun, 'w', encoding='utf-8') as fd:
+            print(gethostname(), file=fd)
+            print(time.ctime(), file=fd)
 
         # XTRACT
         cmd = f"xtract -bpx {sub_dir} -out {res_dir} -species HUMAN"
         if gpu:
             cmd += ' -gpu'
         subprocess.check_call(shlex.split(cmd))
+
+        if IsRun.is_file():
+            IsRun.unlink()
 
     # --- run xtract_stats ----------------------------------------------------
     # Get input data

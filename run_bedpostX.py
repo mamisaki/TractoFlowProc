@@ -52,7 +52,7 @@ def arrange_input_data(subj_root, work_dir, overwrite=False):
 
     dst_dir = work_dir / sub
     if not dst_dir.is_dir():
-        dst_dir.mkdir()
+        os.makedirs(dst_dir)
 
     # Copy files
     for dst_name, src_name in srcfiles.items():
@@ -222,7 +222,7 @@ if __name__ == '__main__':
 
     # --- Run process ------------------------------------------------------
     for subj_root in tqdm(sub_dirs, desc='Running the bedpostx process'):
-        subj = subj_root.name
+        sub = subj_root.name
 
         # -- Chekc if the job is done --
         results_dir = work_dir / f"{sub}.bedpostX"
@@ -230,7 +230,7 @@ if __name__ == '__main__':
         if last_f.is_file() and not overwrite:
             continue
 
-        IsRun = work_dir.parent / f"IsRun_bedpostx_{subj}"
+        IsRun = work_dir.parent / f"IsRun_bedpostx_{sub}"
         if IsRun.is_file():
             continue
 
@@ -243,23 +243,23 @@ if __name__ == '__main__':
             ret = arrange_input_data(subj_root, loc_work_dir,
                                      overwrite=overwrite)
             if ret != 0:
-                assert False, f"arrange_input_data for {subj} failed."
+                assert False, f"arrange_input_data for {sub} failed."
 
             # -- Run bedpostx --
             if gpu:
-                cmd = f"bedpostx_gpu {subj}"
+                cmd = f"bedpostx_gpu {sub}"
             else:
-                cmd = f"bedpostx {subj}"
+                cmd = f"bedpostx {sub}"
             subprocess.check_call(shlex.split(cmd), cwd=loc_work_dir)
 
             # -- Standardization to MNI for XTRACT --
-            bpx_sub_dir = loc_work_dir / f"{subj}.bedpostX"
+            bpx_sub_dir = loc_work_dir / f"{sub}.bedpostX"
             if bpx_sub_dir.is_dir():
                 standardize_to_MNI(bpx_sub_dir, overwrite=overwrite)
 
             # -- Copy back result files --
-            cmd = "rsync -rtuvz --copy-links --include='{subj}*'"
-            cmd += " --include='{subj}*/**' --exclude='*'"
+            cmd = f"rsync -rtuvz --copy-links --include='{sub}*'"
+            cmd += f" --include='{sub}*/**' --exclude='*'"
             cmd += f" {loc_work_dir}/ {work_dir}/"
             subprocess.run(shlex.split(cmd))
 
@@ -267,8 +267,8 @@ if __name__ == '__main__':
             print(e)
 
         finally:
-            if (loc_work_dir / subj).is_dir():
-                shutil.rmtree(loc_work_dir / subj)
+            if (loc_work_dir / sub).is_dir():
+                shutil.rmtree(loc_work_dir / sub)
 
             if IsRun.is_file():
                 IsRun.unlink()
