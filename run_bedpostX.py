@@ -13,6 +13,7 @@ import shlex
 import subprocess
 import shutil
 from socket import gethostname
+import sys
 
 import numpy as np
 from tqdm import tqdm
@@ -95,6 +96,10 @@ def arrange_input_data(subj_root, work_dir, overwrite=False):
 
 # %% standardize_to_MNI =======================================================
 def standardize_to_MNI(bpx_sub_dir, overwrite=False):
+
+    print('-' * 80)
+    print('--- standardize to MNI ---')
+    sys.stdout.flush()
 
     # Set source files
     sub = bpx_sub_dir.name.replace('.bedpostX', '')
@@ -254,8 +259,7 @@ if __name__ == '__main__':
 
             # -- Standardization to MNI for XTRACT --
             bpx_sub_dir = loc_work_dir / f"{sub}.bedpostX"
-            if bpx_sub_dir.is_dir():
-                standardize_to_MNI(bpx_sub_dir, overwrite=overwrite)
+            standardize_to_MNI(bpx_sub_dir, overwrite=overwrite)
 
             # -- Copy back result files --
             cmd = f"rsync -rtuvz --copy-links --include='{sub}*'"
@@ -272,6 +276,12 @@ if __name__ == '__main__':
 
             if IsRun.is_file():
                 IsRun.unlink()
+
+    # run standardize_to_MNI if it has not been done.
+    for bpx_sub_dir in work_dir.glob('*.bedpostX'):
+        wrp_f = bpx_sub_dir / 'xfms' / 'standard2diff.nii.gz'
+        if not wrp_f.is_file():
+            standardize_to_MNI(bpx_sub_dir, overwrite=overwrite)
 
     if tmp_workplace and loc_work_dir.is_dir():
         shutil.rmtree(loc_work_dir)
