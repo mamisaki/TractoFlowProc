@@ -42,6 +42,8 @@ sudo apt install default-jre
 ```
 
 ## Download TractoFlow and freewater_flow
+https://tractoflow-documentation.readthedocs.io/en/latest/installation/install.html
+
 ```
 nextflow pull scilus/tractoflow
 cd
