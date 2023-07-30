@@ -50,6 +50,7 @@ Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input fold
 https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
 
 ```
+conda activate tractflow
 cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input --with_docker --fully_reproducible > nohup_tf.out &
 ```
