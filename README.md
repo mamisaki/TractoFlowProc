@@ -39,7 +39,8 @@ The fiber tracking process uses the white matter (WM), gray matter (GM), and cer
 
 The script run_FreeSurfer.py processes t1.nii.gz in the input folder to create aparc+aseg.nii.gz and wmparc.nii.gz.  
 
-usage: run_FreeSurfer.py [-h] [--copy_local] [--overwrite] input_folder  
+#### usage
+run_FreeSurfer.py [-h] [--overwrite] input_folder  
 e.g.,  
 ```
 cd ~/TractFlowProc
