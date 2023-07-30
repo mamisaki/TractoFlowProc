@@ -2,7 +2,7 @@
 See the [INSTALL](INSTALL.md) file to set up the environment. These instructions assume that the TractFlowProc scripts are stored in ~/TractFlowProc and the workspace is ~/TractFlow_workspace.
 
 ## 1. Prepare data files
-Create an input data folder (e.g. ~/TractFlow_workspace/input).  
+Create an input data folder (e.g., ~/TractFlow_workspace/input).  
 Place the data file for each subject (e.g. S1, S2, ...) into the input folder.  
 The data structure is as follows:  
 input  
@@ -33,25 +33,27 @@ wmparc.nii.gz (optional): FreeSurfer wmparc image file.
 ## 2. Run FreeSurfer (optional)
 **You can skip this step.** Only if the T1 image contrast is not good enough to segment tissue and you need to use Atlas Based Segmentation (ABS) in Tractflow, you should perform this process.  
 
-The fiber tracking process uses the white matter (WM), gray matter (GM), and cerebrospinal fluid (CSF) maps to compute the tracking maps and the seeding mask. These masks are extracted by default with 'fast' in FSL for t1.nii.gz, but you can also use a FreeSurfer segmentation, i.e. aparc+aseg and wmparc, with the --ABS option in tractflow.  
+The fiber tracking process uses the white matter (WM), gray matter (GM), and cerebrospinal fluid (CSF) mask to define the tracking area and the seeding mask. These masks are extracted by default with 'fast' command in FSL for t1.nii.gz, but you can also use a FreeSurfer segmentation, i.e., aparc+aseg and wmparc, with the --ABS option in tractflow.  
 
 The script run_FreeSurfer.py processes t1.nii.gz in the input folder to create aparc+aseg.nii.gz and wmparc.nii.gz.
 ```
 cd ~/TractFlowProc
 nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input > nohup_FS.out &
 ```
-The process will take a very long time (almost a day for one subject, depending on the CPU). Multiple subjects can be processed in parallel, and the number of simultaneous processes is '(number of CPU cores)//2'.  
+The process will take a very long time (almost half a day for one subject, depending on the CPU). Multiple subjects can be processed in parallel, and the number of simultaneous processes is calculated as '(number of CPU cores)//2'.  
 The files processed by FreeSurfer are stored in the folder ~/TractFlow_workspace/freesurfer.  
 Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input folder.  
 
 ## 3. TractoFlow pipeline
 https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
+
+***The command must be run in the 'tractflow' conda environment. See the [INSTALL](INSTALL.md) to set up the environment.***
 ```
 cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input --with_docker --fully_reproducible > nohup_tf.out &
 ```
 The command returns immediately, and the process runs in the background.  
-The process takes a very long time: > 10h for one subject. Multiple subjects can be processed in parallel, depnding on the number of CPU cores.  
+The process takes a long time: > 10h for one subject. Multiple subjects can be processed in parallel, depnding on the number of CPU cores.  
 
 * Add '--ABS' option to run TractoFlow-ABS (See [2](#2-run-freesurfer-optional)).  
 
