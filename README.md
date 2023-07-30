@@ -37,17 +37,26 @@ wmparc.nii.gz (optional): FreeSurfer wmparc image file.
 
 The fiber tracking process uses the white matter (WM), gray matter (GM), and cerebrospinal fluid (CSF) mask to define the tracking area and the seeding mask. These masks are extracted by default with 'fast' command in FSL for t1.nii.gz, but you can also use a FreeSurfer segmentation, i.e., aparc+aseg and wmparc, with the --ABS option in tractflow.  
 
-The script run_FreeSurfer.py processes t1.nii.gz in the input folder to create aparc+aseg.nii.gz and wmparc.nii.gz.
+The script run_FreeSurfer.py processes t1.nii.gz in the input folder to create aparc+aseg.nii.gz and wmparc.nii.gz.  
+
+usage: run_FreeSurfer.py [-h] [--copy_local] [--overwrite] input_folder  
+e.g.,  
 ```
 cd ~/TractFlowProc
 nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input > nohup_FS.out &
 ```
+The script will skip processing subjects with 'aparc+aseg.mgz' and 'wmparc.nii.gz' files, unless the --overwrite option is set.  
+
 The process will take a very long time (almost half a day for one subject, depending on the CPU). Multiple subjects can be processed in parallel, and the number of simultaneous processes is calculated as '(number of CPU cores)//2'.  
 The files processed by FreeSurfer are stored in the folder ~/TractFlow_workspace/freesurfer.  
 Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input folder.  
 
 ## 3. TractoFlow pipeline
-https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
+The script 'run_TractFlow.py' and 'wmparc.nii.gz'
+
+
+See https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html for the processing details.
+
 
 ```
 conda activate tractflow
