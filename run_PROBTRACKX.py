@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     parser.add_argument('FDT_folder', help='FDT results folder')
     parser.add_argument('--gpu', action='store_true', help='Use GPU')
-    parser.add_argument('--seed_template',
+    parser.add_argument('--seed_template', required=True,
                         help='Filename of the seed mask in the template' +
                         ' (MNI152) space. Multiple seeds can be implemented' +
                         ' in one file with different values')

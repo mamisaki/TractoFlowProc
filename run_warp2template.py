@@ -82,7 +82,7 @@ def apply_warp(regt1_fs, template=MNI_f, metric_files=metric_files,
 if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
-        prog='run_Warp2MNI',
+        prog='run_warp2template.py',
         description='warp DTI and FODF metrics into MNI space')
 
     parser.add_argument('results_folder', help='TractFlow results folder')

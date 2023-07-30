@@ -35,7 +35,7 @@ import numpy as np
 if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
-        prog='run_FreewaterFlow',
+        prog='run_FreewaterFlow.py',
         description='Run FreewaterFlow pipeline')
 
     parser.add_argument('tf_results_folder', help='TractFlow results folder')

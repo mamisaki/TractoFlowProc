@@ -22,7 +22,7 @@ import psutil
 if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
-        prog='run_TractFlow',
+        prog='run_TractFlow.py',
         description='Run TractFlow pipeline')
 
     parser.add_argument('input', help='input folder')
