@@ -162,7 +162,7 @@ nohup ./run_PROBTACKX.py --gpu --seed_template ~/TractFlow_workspace/SeedROI.nii
 ```
 
 ## 6. Collecting result files into a single folder
-The script collect_all_results.py copies all standardized result files to one place, [workplace]/All_results/[sub].
+The script collect_all_results.py copies all standardized result files to one place, [workplace]/all_results/[sub].
 
 #### Usage
 usage: collect_all_results.py [-h] [--overwrite] workplace  
@@ -174,7 +174,9 @@ cd ~/TractFlowProc
 ```
 
 The result files are stored in, for example, ~/TractFlow_workspace/All_results/*subject* folders.  
-Each subject folder contains following files.
+
+## Results
+Each subject folder ([workplace]/all_results/[sub]) contains following files.
 - Freewater corrected DTI metrics  
     \*\_fw_corr_fa_\* : fractional anisotropy  
     \*\_fw_corr_md_\* : mean diffusivity  
