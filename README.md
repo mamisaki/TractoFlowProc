@@ -1,6 +1,8 @@
 # README
 See the [INSTALL](INSTALL.md) file to set up the environment. These instructions assume that the TractFlowProc scripts are stored in ~/TractFlowProc and the workspace is ~/TractFlow_workspace.
 
+***The command must be run in the 'tractflow' conda environment. See the [INSTALL](INSTALL.md) to set up the environment.***
+
 ## 1. Prepare data files
 Create an input data folder (e.g., ~/TractFlow_workspace/input).  
 Place the data file for each subject (e.g. S1, S2, ...) into the input folder.  
@@ -47,7 +49,6 @@ Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input fold
 ## 3. TractoFlow pipeline
 https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
 
-***The command must be run in the 'tractflow' conda environment. See the [INSTALL](INSTALL.md) to set up the environment.***
 ```
 cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input --with_docker --fully_reproducible > nohup_tf.out &
