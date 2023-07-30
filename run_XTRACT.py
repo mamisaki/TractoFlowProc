@@ -25,7 +25,7 @@ if '__file__' not in locals():
 if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
-        prog='run_XTRACT',
+        prog='run_XTRACT.py',
         description='Run FSL XTRACT to extract major tracts and there stats')
 
     parser.add_argument('FDT_folder', help='FDT results folder')

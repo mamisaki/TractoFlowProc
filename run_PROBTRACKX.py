@@ -30,7 +30,7 @@ MNI_f = script_dir / 'MNI152_T1_1mm_brain.nii.gz'
 if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
-        prog='run_PROBTRACKX',
+        prog='run_PROBTRACKX.py',
         description='Run FSL PROBTRACKX to make a map of probabilistic' +
         ' tractgrpahy')
 

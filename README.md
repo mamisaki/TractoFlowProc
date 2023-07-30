@@ -46,10 +46,11 @@ e.g,
 cd ~/TractFlowProc
 nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input > nohup_FS.out &
 ```
-The script will skip subjects with 'aparc+aseg.mgz' and 'wmparc.nii.gz' files, unless the --overwrite option is set.  
+The script will skip subjects with 'aparc+aseg.mgz' and 'wmparc.nii.gz' files unless the --overwrite option is set.  
 
 The process will take a very long time (almost half a day for one subject, depending on the CPU). Multiple subjects can be processed in parallel, and the number of simultaneous processes is calculated as '(number of CPU cores)//2'.  
 The files processed by FreeSurfer are stored in the folder ~/TractFlow_workspace/freesurfer.  
+
 The files aparc+aseg.nii.gz and wmparc.nii.gz of each subject are created in the input folder.
 
 ## 3. TractoFlow pipeline
@@ -68,7 +69,7 @@ nohup ./run_TractFlow.py ~/TractFlow_workspace/input --with_docker --fully_repro
 The command returns immediately and the process runs in the background.  
 The process takes a long time: >10h for one subject. Multiple subjects can be processed in parallel, depending on the number of CPU cores.  
 
-The script will skip subjects with a 'PFT_Tracking/*__pft_tracking_prob_wm_seed_0.trk' file in the results directory, unless the --overwrite option is set.  
+The script will skip subjects with a 'PFT_Tracking/*__pft_tracking_prob_wm_seed_0.trk' file in the results directory unless the --overwrite option is set.  
 
 The script copies the input files to ~/tractflow_work, processes them in that directory, and rsyncs the results to the original location (some processes fail on a network drive).  
 
@@ -89,12 +90,12 @@ nohup ./run_FreewaterFlow.py ~/TractFlow_workspace/results > nohup_fwf.out &
 The command returns immediately and the process runs in the background.  
 The process takes a very long time: > 3h for one subject. Multiple subjects are processed in parallel as far as memory allows (20G/subject required).  
 
-The script will skip subjects with a 'FW_Corrected_Metrics/*__fw_corr_tensor.nii.gz' file in the results directory, unless the --overwrite option is set.  
+The script will skip subjects with a 'FW_Corrected_Metrics/*__fw_corr_tensor.nii.gz' file in the results directory unless the --overwrite option is set.  
 
 The result files are saved in the 'FW_Corrected_Metrics' folder in the results/*subject* folder.  
 
 ## 5. Standardize DTI and fODF metrics
-The run_warp2template.py script normalizes the DTI and fDOF metric files to MNI152 template space.  
+The run_warp2template.py script normalizes the DTI and fDOF metric files to the MNI152 template space.  
 
 #### Usage
 run_warp2template.py [-h] [--overwrite] results_folder
@@ -107,28 +108,34 @@ nohup ./run_warp2template.py ~/TractFlow_workspace/results > nohup_wrp.out &
 
 The result files are saved in the 'Standardize_*' folders in the results/*subject* folder.  
 
-The script will skip subjects with standardized DTI and fDOF metric files in the results directory, unless the --overwrite option is set.  
+The script will skip subjects with standardized DTI and fDOF metric files in the results directory unless the --overwrite option is set.  
 
 ## 6. FDT processing
-Running a probabilistic fiber tracking analysis with [FSL FDT tools](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide), including [BEDPOSTX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#BEDPOSTX), [XTRACT](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/XTRACT), and [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres). 
+Perform probabilistic fiber tracking analysis with [FSL FDT tools](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide), including [BEDPOSTX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#BEDPOSTX), [XTRACT](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/XTRACT), and [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres). 
 
 ### BEDPOSTX
-Run commnd below, 
-if GPU can be used,
+The run_bedpostx.py runs the bedpostx command on the freewater corrected DTI images.  
+
+#### Usage
+run_bedpostx.py [-h] [--gpu] [--overwrite] results_folder
+e.g,  
 ```
 conda activate tractflow
 cd ~/TractFlowProc
 nohup ./run_bedpostX.py --gpu ~/TractFlow_workspace/results > nohup_bpx.out &
 ```
+The results will be stored in '~/TractFlow_workspace/FDT/*subject*.bedpostX' folder.  
 
-or if no GPU is available,
-```
-nohup ./run_bedpostX.py ~/TractFlow_workspace/results > nohup_bpx.out &
-```
-The results are stored in '~/TractFlow_workspace/FDT/*subject*.bedpostX' foldres.  
+The script will skip subjects with the file '{sub}.bedpostX/mean_fsumsamples.nii.gz" in the FDT results directory unless the --overwrite option is set.  
 
 ### XTRACT
-[XTRACT](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/XTRACT)(cross-species tractography) can be used to automatically extract a set of carefully dissected tracts in human (neonates and adults) and macaques. It can also be used to define one's own tractography protocols where all the user needs to do is to define a set of masks in standard space (e.g. MNI152).  
+[XTRACT](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/XTRACT) (cross-species tractography) can be used to automatically extract a set of carefully dissected tracts in humans (neonates and adults) and macaques. It can also be used to define one's own tractography protocols where all the user needs to do is to define a set of masks in standard space (e.g. MNI152).  
+
+The run_XTRACT.py runs the bedpostx command on the freewater corrected DTI images.  
+
+#### Usage
+run_XTRACT.py [-h] [--gpu] [--overwrite] FDT_folder  
+e.g,  
 ```
 conda activate tractflow
 cd ~/TractFlowProc
@@ -138,36 +145,50 @@ nohup ./run_XTRACT.py --gpu ~/TractFlow_workspace/FDT > nohup_xtract.out &
 ### PROBTRACKX
 [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres) produces sample streamlines, by starting from some seed and then iterate between (1) drawing an orientation from the voxel-wise bedpostX distributions, (2) taking a step in this direction, and (3) checking for any termination criteria. These sample streamlines can then be used to build up a histogram of how many streamlines visited each voxel or the number of streamlines connecting specific brain regions. This streamline distribution can be thought of as the posterior distribution on the streamline location or the connectivity distribution.  
 
-The script 'run_PROBTACKX.py' runs 'probtrackx2' to create a streamline distribution from a seed mask. The seed mask should be defined in the template (MNI152) space. Multiple seeds can be implemented in one file by using different values. The mask filename should be specified with the '--seed_template' option.   
+The run_PROBTACKX.py script runs 'probtrackx2' to generate a streamline distribution from a seed mask. The seed mask should be defined in the template (MNI152) space. Multiple seeds can be implemented in one file by using different values. The mask filename should be specified with the '--seed_template' option.   
 
-Seed names for each index value can be provided with a csv file of the same name with the suffix '.csv'. For example, the name file for the 'SeedROI.nii.gz' is 'SeedROI.csv'. The name csv file must be placed in the same directory as the mask image file.  
+Seed names for each index value can be provided with a csv file of the same name with the suffix '.csv'. For example, the name file for the 'SeedROI.nii.gz' is 'SeedROI.csv'. The csv file must be located in the same directory as the mask image file.  
 
-A sample seed ROI image and its name file are provided as SeedROI.nii.gz and SeedROI.csv in this repository (i.e., ~/TractflowProc/). This file defines the centromedial amygdala (CMA), basolateral amygdala (BLA), superficial amygdala (SFA), and nucleus accumbense (NACC) regions bilaterally.  
+A sample seed ROI image and its name file are provided as SeedROI.nii.gz and SeedROI.csv in this repository (i.e., ~/TractflowProc/). This file defines the centromedial amygdala (CMA), basolateral amygdala (BLA), superficial amygdala (SFA), and nucleus accumbens (NACC) regions bilaterally.  
 
-To run the commands below, you will need to prepare the SeedROI.nii.gz file in ~/TractFlow_workspace. The name csv file must be placed in the same directory as the mask image file.
+#### Usage
+run_PROBTRACKX.py [-h] [--gpu] --seed_template SEED_TEMPLATE [--overwrite] FDT_folder  
+e.g,  
+To run the commands below, you need to prepare the SeedROI.nii.gz file in ~/TractFlow_workspace. The csv file containing the ROI names must be placed in the same directory as the mask image file.
 ```
 conda activate tractflow
 cd ~/TractFlowProc
 nohup ./run_PROBTACKX.py --gpu --seed_template ~/TractFlow_workspace/SeedROI.nii.gz ~/TractFlow_workspace/FDT > nohup_probtrackx.out &
 ```
 
-## 6. Collecting the result files in a single folder
+## 6. Collecting result files into a single folder
+The script collect_all_results.py copies all standardized result files to one place, [workplace]/All_results/[sub].
+
+#### Usage
+usage: collect_all_results.py [-h] [--overwrite] workplace  
+e.g,  
 ```
 conda activate tractflow
 cd ~/TractFlowProc
 ./collect_all_results.py ~/TractFlow_workspace
 ```
 
-Result files are stored in the ~/TractFlow_workspace/results/*subject* folders.  
+The result files are stored in, for example, ~/TractFlow_workspace/All_results/*subject* folders.  
+Each subject folder contains following files.
+- Freewater corrected DTI metrics  
+    \*\_fw_corr_fa_\* : fractional anisotropy  
+    \*\_fw_corr_md_\* : mean diffusivity  
+    \*\_fw_corr_rd_\* : radial diffusivity
+    \*\_fw_corr_ad_\* : axial diffusivity  
+    \*\_fw_corr_ga_\* : geodesic anisotropy [[Batchelor et al., 2005](https://onlinelibrary.wiley.com/doi/10.1002/mrm.20334)]
 
-- DTI_Metrics/  
-    The axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [[Batchelor et al., 2005](https://onlinelibrary.wiley.com/doi/10.1002/mrm.20334)], mean diffusivity (md), radial diffusivity (rd), tensor, tensor norm [[Kindlmann et al., 2007](https://ieeexplore.ieee.org/abstract/document/4359059)], tensor eigenvalues, tensor eigenvectors, tensor mode, and color-FA are created.
+- XTRACT  
+    \*\_FDT_xtract_stats.csv : XTRACT output statistics
 
-- FODF_Metrics/  
-    The fiber orientation distribution function (fODF) metrics computed are the total and maximum Apparent Fiber Density (AFD) [[Raffelt et al., 2012](https://www.sciencedirect.com/science/article/pii/S1053811911012092)], the Number of Fiber Orientation (NuFO) [[Dell’Acqua et al., 2013](https://onlinelibrary.wiley.com/doi/epdf/10.1002/hbm.22080)] and principal fODFs orientations (up to 5 per voxel).
+- PROBTRACKX  
+    \*\_[ROI_NAME]_fdt_paths_prob_standard.nii.gz : Probabilistic tractography map for the ROI seed.
 
-- FW_Corrected_Metrics/  
-    DTI metrics files with freewater correction are created in this folder.    
+- Freewater uncorrected metrcts  
+    DTI metrics : The axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [Batchelor et al., 2005], mean diffusivity (md), radial diffusivity (rd)
     
-- Local_Tracking/  
-    *subject*__local_tracking_prob_wm_seeding_wm_mask_seed_0.trk  
+    FODF metrics : The fiber orientation distribution function (fODF) metrics including the total and maximum Apparent Fiber Density (AFD) [Raffelt et al., 2012], the Number of Fiber Orientation (NuFO) [Dell’Acqua et al., 2013] and principal fODFs orientations (up to 5 per voxel).

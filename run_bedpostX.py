@@ -168,7 +168,7 @@ def standardize_to_MNI(bpx_sub_dir, overwrite=False):
 if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
-        prog='run_bedpostx',
+        prog='run_bedpostx.py',
         description='Run FSL bedpostx to the TractFlow preprocessed DTI files')
 
     parser.add_argument('results_folder', help='TractFlow results folder')
