@@ -110,6 +110,19 @@ nohup ./run_XTRACT.py --gpu ~/TractFlow_workspace/FDT > nohup_xtract.out &
 ### PROBTRACKX
 [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres) produces sample streamlines, by starting from some seed and then iterate between (1) drawing an orientation from the voxel-wise bedpostX distributions, (2) taking a step in this direction, and (3) checking for any termination criteria. These sample streamlines can then be used to build up a histogram of how many streamlines visited each voxel or the number of streamlines connecting specific brain regions. This streamline distribution can be thought of as the posterior distribution on the streamline location or the connectivity distribution.  
 
+The script run_PROBTACKX.py runs 'probtrackx2' to create a streamline distribution from a seed mask. The seed mask should be defined in the template (MNI152) space. Multiple seeds can be implemented in one file with different values. The mask filename is provided by the '--seed_template' option.  
+
+Seed names for each index value can be provided with a csv file of the same name with the suffix '.csv'. For example, the name file for the 'SeedROI.nii.gz' is 'SeedROI.csv'. The name csv file must be placed in the same directory as the mask image file.  
+
+A sample seed ROI image and its name file are provided as SeedROI.nii.gz and SeedROI.csv in this repository (i.e., ~/TractflowProc/). This file defines the centromedial amygdala (CMA), basolateral amygdala (BLA), superficial amygdala (SFA), and nucleus accumbense (NACC) regions bilaterally.  
+
+To run the commands below, you will need to prepare the SeedROI.nii.gz file in ~/TractFlow_workspace. The name csv file must be placed in the same directory as the mask image file.
+```
+conda activate tractflow
+cd ~/TractFlowProc
+nohup ./run_PROBTACKX.py --gpu --seed_template ~/TractFlow_workspace/SeedROI.nii.gz ~/TractFlow_workspace/FDT > nohup_xtract.out &
+```
+
 ## 6. Collecting the result files in a single folder
 ```
 conda activate tractflow
