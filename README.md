@@ -120,7 +120,7 @@ To run the commands below, you will need to prepare the SeedROI.nii.gz file in ~
 ```
 conda activate tractflow
 cd ~/TractFlowProc
-nohup ./run_PROBTACKX.py --gpu --seed_template ~/TractFlow_workspace/SeedROI.nii.gz ~/TractFlow_workspace/FDT > nohup_xtract.out &
+nohup ./run_PROBTACKX.py --gpu --seed_template ~/TractFlow_workspace/SeedROI.nii.gz ~/TractFlow_workspace/FDT > nohup_probtrackx.out &
 ```
 
 ## 6. Collecting the result files in a single folder
