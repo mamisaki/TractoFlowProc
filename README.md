@@ -1,6 +1,8 @@
 # README
 See the [INSTALL](INSTALL.md) file to set up the environment. These instructions assume that the TractFlowProc scripts are stored in ~/TractFlowProc and the workspace is ~/TractFlow_workspace.
 
+***The command must be run in the 'tractflow' conda environment. See the [INSTALL](INSTALL.md) to set up the environment.***
+
 ## 1. Prepare data files
 Create an input data folder (e.g., ~/TractFlow_workspace/input).  
 Place the data file for each subject (e.g. S1, S2, ...) into the input folder.  
@@ -35,20 +37,30 @@ wmparc.nii.gz (optional): FreeSurfer wmparc image file.
 
 The fiber tracking process uses the white matter (WM), gray matter (GM), and cerebrospinal fluid (CSF) mask to define the tracking area and the seeding mask. These masks are extracted by default with 'fast' command in FSL for t1.nii.gz, but you can also use a FreeSurfer segmentation, i.e., aparc+aseg and wmparc, with the --ABS option in tractflow.  
 
-The script run_FreeSurfer.py processes t1.nii.gz in the input folder to create aparc+aseg.nii.gz and wmparc.nii.gz.
+The script run_FreeSurfer.py processes t1.nii.gz in the input folder to create aparc+aseg.nii.gz and wmparc.nii.gz.  
+
+#### usage
+run_FreeSurfer.py [-h] [--overwrite] input_folder  
+e.g.,  
 ```
 cd ~/TractFlowProc
 nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input > nohup_FS.out &
 ```
+The script will skip processing subjects with 'aparc+aseg.mgz' and 'wmparc.nii.gz' files, unless the --overwrite option is set.  
+
 The process will take a very long time (almost half a day for one subject, depending on the CPU). Multiple subjects can be processed in parallel, and the number of simultaneous processes is calculated as '(number of CPU cores)//2'.  
 The files processed by FreeSurfer are stored in the folder ~/TractFlow_workspace/freesurfer.  
 Each subject's aparc+aseg.nii.gz and wmparc.nii.gz are created in the input folder.  
 
 ## 3. TractoFlow pipeline
-https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html
+The script 'run_TractFlow.py' and 'wmparc.nii.gz'
 
-***The command must be run in the 'tractflow' conda environment. See the [INSTALL](INSTALL.md) to set up the environment.***
+
+See https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html for the processing details.
+
+
 ```
+conda activate tractflow
 cd ~/TractFlowProc
 nohup ./run_TractFlow.py ~/TractFlow_workspace/input --with_docker --fully_reproducible > nohup_tf.out &
 ```
@@ -107,6 +119,19 @@ nohup ./run_XTRACT.py --gpu ~/TractFlow_workspace/FDT > nohup_xtract.out &
 
 ### PROBTRACKX
 [PROBTRACKX](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres) produces sample streamlines, by starting from some seed and then iterate between (1) drawing an orientation from the voxel-wise bedpostX distributions, (2) taking a step in this direction, and (3) checking for any termination criteria. These sample streamlines can then be used to build up a histogram of how many streamlines visited each voxel or the number of streamlines connecting specific brain regions. This streamline distribution can be thought of as the posterior distribution on the streamline location or the connectivity distribution.  
+
+The script 'run_PROBTACKX.py' runs 'probtrackx2' to create a streamline distribution from a seed mask. The seed mask should be defined in the template (MNI152) space. Multiple seeds can be implemented in one file by using different values. The mask filename should be specified with the '--seed_template' option.   
+
+Seed names for each index value can be provided with a csv file of the same name with the suffix '.csv'. For example, the name file for the 'SeedROI.nii.gz' is 'SeedROI.csv'. The name csv file must be placed in the same directory as the mask image file.  
+
+A sample seed ROI image and its name file are provided as SeedROI.nii.gz and SeedROI.csv in this repository (i.e., ~/TractflowProc/). This file defines the centromedial amygdala (CMA), basolateral amygdala (BLA), superficial amygdala (SFA), and nucleus accumbense (NACC) regions bilaterally.  
+
+To run the commands below, you will need to prepare the SeedROI.nii.gz file in ~/TractFlow_workspace. The name csv file must be placed in the same directory as the mask image file.
+```
+conda activate tractflow
+cd ~/TractFlowProc
+nohup ./run_PROBTACKX.py --gpu --seed_template ~/TractFlow_workspace/SeedROI.nii.gz ~/TractFlow_workspace/FDT > nohup_probtrackx.out &
+```
 
 ## 6. Collecting the result files in a single folder
 ```

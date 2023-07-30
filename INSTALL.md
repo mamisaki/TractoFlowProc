@@ -7,12 +7,6 @@ See https://conda.io/projects/conda/en/latest/user-guide/install/index.html
 ## Install git
 See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
-## Install docker
-See https://docs.docker.com/engine/install/
-
-## Install singurality
-https://docs.sylabs.io/guides/3.0/user-guide/quick_start.html#quick-installation-steps
-
 ## Install FreeSurfer
 https://surfer.nmr.mgh.harvard.edu/fswiki/DownloadAndInstall
 
@@ -31,13 +25,12 @@ cd
 git clone https://github.com/scilus/scilpy.git
 ```
 
-## Install scilpy and antspyx in conda environment
+## Create tractflow conda environment
 ```
-conda create -n tractflow python=3.10 pip hdf5=1.12 cython numpy psutil mkl -c anaconda
+conda create -n tractflow python=3.10 pip hdf5=1.12 cython psutil mkl pyyaml scikit-image seaborn singularity toml tornado typing-extensions -c anaconda -c conda-forge
 conda activate tractflow
 cd ~/scilpy
-pip install -e .
-pip install antspyx
+pip install antspyx smriprep niworkflows fmriprep
 ```
 
 ## Download nextflow
@@ -53,10 +46,9 @@ sudo apt install default-jre
 nextflow pull scilus/tractoflow
 cd
 git clone https://github.com/scilus/freewater_flow
-docker pull scilus/scilus:1.4.2
 ```
 
-## Install c3d and connectome workbench for converting ANTs warp to FSL
+## Install c3d and connectome workbench for converting ANTs' warp to FSL
 Download c3d-1.0.0-Linux-x86_64.tar.gz from http://www.nitrc.org/frs/downloadlink.php/7073 into ~/Downloads  
 ```
 cd
@@ -71,4 +63,6 @@ sudo apt install connectome-workbench
 ```
 cd
 git clone https://github.com/mmisaki/TractFlowProc
+cd TractFlowProc
+wget https://scil.usherbrooke.ca/containers/scilus_1.5.0.sif
 ```
