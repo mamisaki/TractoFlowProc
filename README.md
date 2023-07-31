@@ -62,7 +62,7 @@ e.g,
 ```
 conda activate tractflow
 cd ~/TractFlowProc
-nohup ./run_TractFlow.py ~/TractFlow_workspace/input --with_docker --fully_reproducible > nohup_tf.out &
+nohup ./run_TractFlow.py ~/TractFlow_workspace/input --fully_reproducible > nohup_tf.out &
 ```
 * Add '--ABS' option to run TractoFlow-ABS (See [2](#2-run-freesurfer-optional)). 
 
