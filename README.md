@@ -53,7 +53,7 @@ The files processed by FreeSurfer are stored in the folder ~/TractFlow_workspace
 
 The files aparc+aseg.nii.gz and wmparc.nii.gz of each subject are created in the input folder.
 
-## 3. TractoFlow pipeline
+## 3. TractFlow pipeline
 The script run_TractFlow.py runs the TractFlow pipeline.
 
 #### Usage
@@ -62,7 +62,7 @@ e.g,
 ```
 conda activate tractflow
 cd ~/TractFlowProc
-nohup ./run_TractFlow.py ~/TractFlow_workspace/input --fully_reproducible > nohup_tf.out &
+nohup ./run_TractFlow.py ~/TractFlow_workspace/input --with_docker --fully_reproducible > nohup_tf.out &
 ```
 * Add '--ABS' option to run TractoFlow-ABS (See [2](#2-run-freesurfer-optional)). 
 
