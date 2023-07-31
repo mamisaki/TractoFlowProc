@@ -188,7 +188,8 @@ if __name__ == '__main__':
             cmd += f" -profile {','.join(profile)}"
 
         if with_docker:
-            cmd += ' -with-docker scilus/scilus:1.4.2'
+            #cmd += ' -with-docker scilus/scilus:1.4.2'
+            cmd += ' -with-docker scilus/scilus:1.5.0'
         else:
             cmd += f' -with-singularity {sif_file}'
         cmd += ' -resume'
