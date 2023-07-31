@@ -10,8 +10,8 @@ git clone https://github.com/scilus/scilpy.git
 git clone https://github.com/scilus/freewater_flow
 
 # Install scilpy
-conda create -n tractflow python=3.10 pip hdf5=1.12 cython numpy -c anaconda
-conda activate tractflow
+conda create -n tractoflow python=3.10 pip hdf5=1.12 cython numpy -c anaconda
+conda activate tractoflow
 
 cd ~/scilpy
 pip install -e .
@@ -38,7 +38,7 @@ if __name__ == '__main__':
         prog='run_FreewaterFlow.py',
         description='Run FreewaterFlow pipeline')
 
-    parser.add_argument('tf_results_folder', help='TractFlow results folder')
+    parser.add_argument('tf_results_folder', help='TractoFlow results folder')
     parser.add_argument('--workplace', help='Local working place')
     parser.add_argument('--num_proc', default=0, type=int,
                         help='Maximum number of subjects'
@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     '''DEBUG
     tf_results_folder = Path.home() / \
-        'MRI/TractFlow_workspace/DTI_AdolescentData/results'
+        'MRI/TractoFlow_workspace/DTI_AdolescentData/results'
     main_nf = Path.home() / 'freewater_flow' / 'main.nf'
     copy_local = False
     workplace = None
@@ -144,7 +144,7 @@ if __name__ == '__main__':
             shutil.rmtree(fwflow_input_dir)
         fwflow_input_dir.mkdir()
 
-        print('Copy tractflow results for freewater_flow')
+        print('Copy tractoflow results for freewater_flow')
         excld_subj = []
         for sub_dir in sub_dirs:
             if not sub_dir.is_dir():

@@ -51,10 +51,10 @@ if __name__ == '__main__':
 
     '''DEBUG
     FDT_folder = Path.home() / \
-        'MRI/TractFlow_workspace/DTI_AdolescentData/FDT'
+        'MRI/TractoFlow_workspace/DTI_AdolescentData/FDT'
     gpu = True
     seed_template = Path.home() / \
-        'MRI/TractFlow_workspace/DTI_AdolescentData/SeedROI.nii.gz'
+        'MRI/TractoFlow_workspace/DTI_AdolescentData/SeedROI.nii.gz'
     overwrite = False
     '''
 

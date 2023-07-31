@@ -169,9 +169,10 @@ if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
         prog='run_bedpostx.py',
-        description='Run FSL bedpostx to the TractFlow preprocessed DTI files')
+        description='Run FSL bedpostx to the TractoFlow preprocessed DTI files'
+        )
 
-    parser.add_argument('results_folder', help='TractFlow results folder')
+    parser.add_argument('results_folder', help='TractoFlow results folder')
     parser.add_argument('--gpu', action='store_true', help='Use GPU')
     parser.add_argument('--workplace', help='Local working place')
     parser.add_argument('--overwrite', action='store_true', help='Overwrite')
@@ -187,7 +188,7 @@ if __name__ == '__main__':
 
     '''DEBUG
     results_folder = Path.home() / \
-        'MRI/TractFlow_workspace/DTI_AdolescentData/results'
+        'MRI/TractoFlow_workspace/DTI_AdolescentData/results'
     gpu = True
     workplace = None
     overwrite = False

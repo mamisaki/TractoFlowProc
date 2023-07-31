@@ -14,7 +14,7 @@ if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
         prog='collect_all_results.py',
-        description='Collect all result files of TractFlowProc')
+        description='Collect all result files of TractoFlowProc')
 
     parser.add_argument('workplace', help='worked directory')
     parser.add_argument('--overwrite', action='store_true', help='Overwrite')
@@ -24,7 +24,7 @@ if __name__ == '__main__':
     overwrite = args.overwrite
 
     '''
-    workplace = Path.home() / 'MRI/TractFlow_workspace/DTI_AdolescentData'
+    workplace = Path.home() / 'MRI/TractoFlow_workspace/DTI_AdolescentData'
     overwrite = False
     '''
 

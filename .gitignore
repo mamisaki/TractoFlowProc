@@ -23,5 +23,8 @@ clean_docker
 *.log
 *.pid
 nohup*
+.nextflow*
 .nextflow/*
 *.zip
+*.sif
+install.sh

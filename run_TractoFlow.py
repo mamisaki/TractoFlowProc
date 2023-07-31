@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-""" run_TractFlow.py
+""" run_TractoFlow.py
 https://tractoflow-documentation.readthedocs.io/en/latest/index.html
 """
 
@@ -22,8 +22,8 @@ import psutil
 if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
-        prog='run_TractFlow.py',
-        description='Run TractFlow pipeline')
+        prog='run_TractoFlow.py',
+        description='Run TractoFlow pipeline')
 
     parser.add_argument('input', help='input folder')
     parser.add_argument('--use_cuda', action='store_true',
@@ -47,17 +47,34 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     input_orig = Path(args.input).resolve()
-    assert input_orig.is_dir(), f"No directory at {input_orig}"
     use_cuda = args.use_cuda
     fully_reproducible = args.fully_reproducible
     ABS = args.ABS
     fs = args.fs
+    workplace = args.workplace
+    num_proc = args.num_proc
+    with_docker = args.with_docker
+    processes = args.processes
+    overwrite = args.overwrite
+
+    ''' DEBUG
+    input_orig = Path.home() / 'MRI' / 'TractoFlow_workspace' / \
+        'DTI_AdolescentData' / 'input_CW'
+    use_cuda = False
+    fully_reproducible = True
+    ABS = False
+    workplace = None
+    num_proc = 0
+    with_docker = False
+    processes = None
+    overwrite = False
+    '''
+
+    assert input_orig.is_dir(), f"No directory at {input_orig}"
     if ABS and fs is None:
         fs = input_orig.parent / 'freesurfer'
-    workplace = args.workplace
     if workplace is not None:
         workplace = Path(workplace).resolve()
-    num_proc = args.num_proc
     num_proc_possible = max(int(np.round(psutil.virtual_memory().available /
                                          (10 * 10e8))), 1)
     if num_proc == 0:
@@ -65,29 +82,20 @@ if __name__ == '__main__':
     else:
         num_proc = min(num_proc, num_proc_possible)
 
-    with_docker = args.with_docker
-    processes = args.processes
-    overwrite = args.overwrite
-
-    ''' DEBUG
-    input_orig = Path.home() / 'MRI' / 'TractFlow_workspace' / \
-        'DTI_AdolescentData' / 'input_CW'
-    use_cuda = False
-    fully_reproducible = True
-    ABS = False
-    workplace = None
-    with_docker = True
-    processes = None
-    overwrite = False
-    '''
-
     wd0 = input_orig.parent
 
     if workplace is None:
         tmp_workplace = True
-        workplace = Path.home() / 'tractflow_work'
+        workplace = Path.home() / 'tractoflow_work'
     else:
         tmp_workplace = False
+
+    if not with_docker:
+        sif_files = sorted(
+            list(Path(__file__).resolve().parent.glob('scilus*.sif')))
+        assert len(sif_files), \
+            f'Not found scilus*.sif file in {Path(__file__).resolve().parent}'
+        sif_file = sif_files[-1]
 
     # --- Proc loop -----------------------------------------------------------
     while True:
@@ -139,16 +147,16 @@ if __name__ == '__main__':
         if not workplace.is_dir():
             workplace.mkdir()
 
-        tractflow_input_dir = workplace / 'tractflow_input'
-        tractflow_input_dir.mkdir()
+        tractoflow_input_dir = workplace / 'tractoflow_input'
+        tractoflow_input_dir.mkdir()
 
-        print('Link tractflow input files')
+        print('Link tractoflow input files')
         for sub_dir in sub_dirs:
             if not sub_dir.is_dir():
                 continue
 
             sub = sub_dir.name
-            dst_dir = tractflow_input_dir / sub
+            dst_dir = tractoflow_input_dir / sub
             if not dst_dir.is_dir():
                 dst_dir.mkdir()
 
@@ -158,9 +166,9 @@ if __name__ == '__main__':
                 dst_f = dst_dir / src_f.name
                 dst_f.symlink_to(src_f)
 
-        # -- Run TractFlow ----
-        cmd = "nextflow run -bg tractoflow -r 2.4.1"
-        cmd += f" --input {tractflow_input_dir}"
+        # -- Run TractoFlow ----
+        cmd = "nextflow run -bg tractoflow -r 2.4.2"
+        cmd += f" --input {tractoflow_input_dir}"
         if ABS:
             cmd += " --fs {fs}"
         if processes is not None:
@@ -181,6 +189,8 @@ if __name__ == '__main__':
 
         if with_docker:
             cmd += ' -with-docker scilus/scilus:1.4.2'
+        else:
+            cmd += f' -with-singularity {sif_file}'
         cmd += ' -resume'
 
         try:
@@ -217,9 +227,9 @@ if __name__ == '__main__':
             time.sleep(10)
 
         # --- Copy back -------------------------------------------------------
-        shutil.rmtree(tractflow_input_dir)
+        shutil.rmtree(tractoflow_input_dir)
         cmd = "rsync -rtuvz --copy-links --exclude='.nextflow*'"
-        cmd += f" -exclude='tractflow_input' {workplace}/ {wd0}/"
+        cmd += f" -exclude='tractoflow_input' {workplace}/ {wd0}/"
         subprocess.run(shlex.split(cmd))
 
         if IsRun.is_file():

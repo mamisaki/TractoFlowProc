@@ -25,10 +25,10 @@ cd
 git clone https://github.com/scilus/scilpy.git
 ```
 
-## Create tractflow conda environment
+## Create tractoflow conda environment
 ```
-conda create -n tractflow python=3.10 pip hdf5=1.12 cython psutil mkl pyyaml scikit-image seaborn singularity toml tornado typing-extensions -c anaconda -c conda-forge
-conda activate tractflow
+conda create -n tractoflow python=3.10 pip hdf5=1.12 cython psutil mkl pyyaml scikit-image seaborn singularity toml tornado typing-extensions -c anaconda -c conda-forge
+conda activate tractoflow
 cd ~/scilpy
 pip install antspyx smriprep niworkflows fmriprep
 ```
@@ -61,10 +61,12 @@ ln -sf ~/c3d-1.0.0-Linux-x86_64/c3d_affine_tool ./
 sudo apt install connectome-workbench
 ```
 
-## Install TractFlowProc scripts
+## Install TractoFlowProc scripts
 ```
 cd
-git clone https://github.com/mmisaki/TractFlowProc
-cd TractFlowProc
+git clone https://github.com/mmisaki/TractoFlowProc
+cd TractoFlowProc
+docker pull scilus/scilus:1.5.0
+sudo singularity build scilus_1.5.0.sif docker://scilus/scilus:1.5.0
 wget https://scil.usherbrooke.ca/containers/scilus_1.5.0.sif
 ```

@@ -85,7 +85,7 @@ if __name__ == '__main__':
         prog='run_warp2template.py',
         description='warp DTI and FODF metrics into MNI space')
 
-    parser.add_argument('results_folder', help='TractFlow results folder')
+    parser.add_argument('results_folder', help='TractoFlow results folder')
     parser.add_argument('--template', default=MNI_f,
                         help='Template brain file')
     parser.add_argument('--overwrite', action='store_true', help='Overwrite')
@@ -100,7 +100,7 @@ if __name__ == '__main__':
 
     '''DEBUG
     results_folder = Path.home() / \
-        'MRI/TractFlow_workspace/DTI_AdolescentData/results'
+        'MRI/TractoFlow_workspace/DTI_AdolescentData/results'
     template = MNI_f
     overwrite = False
     work_root = results_folder.parent

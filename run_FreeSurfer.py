@@ -119,7 +119,7 @@ if __name__ == '__main__':
     # Read arguments
     parser = argparse.ArgumentParser(
         prog='run_FreeSurfer.py',
-        description='Create aparc+aseg and wmparc for TractFlow pipeline')
+        description='Create aparc+aseg and wmparc for TractoFlow pipeline')
 
     parser.add_argument('input_folder', help='input folder')
     parser.add_argument('--copy_local', action='store_true',
@@ -141,7 +141,7 @@ if __name__ == '__main__':
     # Run recon-all
     run_reconall(input_folder, subjdir)
 
-    # Copy aparc+aseg and wmparc to TractFlow input_folder
+    # Copy aparc+aseg and wmparc to TractoFlow input_folder
     copy_aparc_wmparc(input_folder, subjdir, overwrite=overwrite)
 
     # Sync to the original workpalce

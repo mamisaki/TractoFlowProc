@@ -1,10 +1,10 @@
 # README
-See the [INSTALL](INSTALL.md) file to set up the environment. These instructions assume that the TractFlowProc scripts are stored in ~/TractFlowProc and the workspace is ~/TractFlow_workspace.
+See the [INSTALL](INSTALL.md) file to set up the environment. These instructions assume that the TractoFlowProc scripts are stored in ~/TractoFlowProc and the workspace is ~/TractoFlow_workspace.
 
-***The command must be run in the 'tractflow' conda environment. See [INSTALL](INSTALL.md) to set up the environment.***
+***The command must be run in the 'tractoflow' conda environment. See [INSTALL](INSTALL.md) to set up the environment.***
 
 ## 1. Prepare data files
-Create an input data folder (e.g., ~/TractFlow_workspace/input).  
+Create an input data folder (e.g., ~/TractoFlow_workspace/input).  
 Place the data file for each subject (e.g. S1, S2, ...) into the input folder.  
 The data structure is as follows  
 input  
@@ -33,9 +33,9 @@ aparc+aseg.nii.gz (optional): FreeSurfer aparc+aseg image file.
 wmparc.nii.gz (optional): FreeSurfer wmparc image file.  
 
 ## 2. Run FreeSurfer (optional)
-**You can skip this step.** Only if the T1 image contrast is not good enough to segment tissue and you need to use Atlas Based Segmentation (ABS) in Tractflow should you perform this process.  
+**You can skip this step.** Only if the T1 image contrast is not good enough to segment tissue and you need to use Atlas Based Segmentation (ABS) in TractoFlow should you perform this process.  
 
-The fiber tracking process uses the white matter (WM), gray matter (GM), and cerebrospinal fluid (CSF) masks to define the tracking area and seeding mask. These masks are extracted by default with the 'fast' command in FSL for t1.nii.gz, but you can also use a FreeSurfer segmentation, i.e. aparc+aseg and wmparc, with the --ABS option in tractflow.  
+The fiber tracking process uses the white matter (WM), gray matter (GM), and cerebrospinal fluid (CSF) masks to define the tracking area and seeding mask. These masks are extracted by default with the 'fast' command in FSL for t1.nii.gz, but you can also use a FreeSurfer segmentation, i.e. aparc+aseg and wmparc, with the --ABS option in tractoflow.  
 
 The script run_FreeSurfer.py processes t1.nii.gz in the input folder to create aparc+aseg.nii.gz and wmparc.nii.gz.  
 
@@ -43,26 +43,26 @@ The script run_FreeSurfer.py processes t1.nii.gz in the input folder to create a
 run_FreeSurfer.py [-h] [--overwrite] input_folder  
 e.g,  
 ```
-cd ~/TractFlowProc
-nohup ./run_FreeSurfer.py ~/TractFlow_workspace/input > nohup_FS.out &
+cd ~/TractoFlowProc
+nohup ./run_FreeSurfer.py ~/TractoFlow_workspace/input > nohup_FS.out &
 ```
 The script will skip subjects with 'aparc+aseg.mgz' and 'wmparc.nii.gz' files unless the --overwrite option is set.  
 
 The process will take a very long time (almost half a day for one subject, depending on the CPU). Multiple subjects can be processed in parallel, and the number of simultaneous processes is calculated as '(number of CPU cores)//2'.  
-The files processed by FreeSurfer are stored in the folder ~/TractFlow_workspace/freesurfer.  
+The files processed by FreeSurfer are stored in the folder ~/TractoFlow_workspace/freesurfer.  
 
 The files aparc+aseg.nii.gz and wmparc.nii.gz of each subject are created in the input folder.
 
 ## 3. TractoFlow pipeline
-The run_TractFlow.pyscript runs the TractFlow pipeline.
+The run_TractoFlow.pyscript runs the TractoFlow pipeline.
 
 #### Usage
-run_TractFlow.py [-h] [--fully_reproducible] [--ABS] [--workplace WORKPLACE] [--num_proc NUM_PROC] [--processes PROCESSES] [--overwrite] input
+run_TractoFlow.py [-h] [--fully_reproducible] [--ABS] [--workplace WORKPLACE] [--num_proc NUM_PROC] [--processes PROCESSES] [--overwrite] input
 e.g,  
 ```
-conda activate tractflow
-cd ~/TractFlowProc
-nohup ./run_TractFlow.py ~/TractFlow_workspace/input --with_docker --fully_reproducible > nohup_tf.out &
+conda activate tractoflow
+cd ~/TractoFlowProc
+nohup ./run_TractoFlow.py ~/TractoFlow_workspace/input --with_docker --fully_reproducible > nohup_tf.out &
 ```
 * Add '--ABS' option to run TractoFlow-ABS (See [2](#2-run-freesurfer-optional)). 
 
@@ -71,7 +71,7 @@ The process takes a long time: >10h for one subject. Multiple subjects can be pr
 
 The script will skip subjects with a 'PFT_Tracking/*__pft_tracking_prob_wm_seed_0.trk' file in the results directory unless the --overwrite option is set.  
 
-The script copies the input files to ~/tractflow_work, processes them in that directory, and rsyncs the results to the original location (some processes fail on a network drive).  
+The script copies the input files to ~/tractoflow_work, processes them in that directory, and rsyncs the results to the original location (some processes fail on a network drive).  
 
 See https://tractoflow-documentation.readthedocs.io/en/latest/pipeline/steps.html for processing details.  
 
@@ -83,9 +83,9 @@ https://github.com/scilus/freewater_flow
 run_FreewaterFlow.py [-h] [--workplace WORKPLACE] [--num_proc NUM_PROC] [--overwrite] tf_results_folder  
 e.g.,  
 ```
-conda activate tractflow
-cd ~/TractFlowProc
-nohup ./run_FreewaterFlow.py ~/TractFlow_workspace/results > nohup_fwf.out &
+conda activate tractoflow
+cd ~/TractoFlowProc
+nohup ./run_FreewaterFlow.py ~/TractoFlow_workspace/results > nohup_fwf.out &
 ```
 The command returns immediately and the process runs in the background.  
 The process takes a very long time: > 3h for one subject. Multiple subjects are processed in parallel as far as memory allows (20G/subject required).  
@@ -101,9 +101,9 @@ The run_warp2template.py script normalizes the DTI and fDOF metric files to the 
 run_warp2template.py [-h] [--overwrite] results_folder
 e.g,  
 ```
-conda activate tractflow
-cd ~/TractFlowProc
-nohup ./run_warp2template.py ~/TractFlow_workspace/results > nohup_wrp.out &
+conda activate tractoflow
+cd ~/TractoFlowProc
+nohup ./run_warp2template.py ~/TractoFlow_workspace/results > nohup_wrp.out &
 ```
 
 The result files are saved in the 'Standardize_*' folders in the results/*subject* folder.  
@@ -120,11 +120,11 @@ The run_bedpostx.py runs the bedpostx command on the freewater corrected DTI ima
 run_bedpostx.py [-h] [--gpu] [--overwrite] results_folder
 e.g,  
 ```
-conda activate tractflow
-cd ~/TractFlowProc
-nohup ./run_bedpostX.py --gpu ~/TractFlow_workspace/results > nohup_bpx.out &
+conda activate tractoflow
+cd ~/TractoFlowProc
+nohup ./run_bedpostX.py --gpu ~/TractoFlow_workspace/results > nohup_bpx.out &
 ```
-The results will be stored in '~/TractFlow_workspace/FDT/*subject*.bedpostX' folder.  
+The results will be stored in '~/TractoFlow_workspace/FDT/*subject*.bedpostX' folder.  
 
 The script will skip subjects with the file '{sub}.bedpostX/mean_fsumsamples.nii.gz" in the FDT results directory unless the --overwrite option is set.  
 
@@ -137,9 +137,9 @@ The run_XTRACT.py runs the bedpostx command on the freewater corrected DTI image
 run_XTRACT.py [-h] [--gpu] [--overwrite] FDT_folder  
 e.g,  
 ```
-conda activate tractflow
-cd ~/TractFlowProc
-nohup ./run_XTRACT.py --gpu ~/TractFlow_workspace/FDT > nohup_xtract.out &
+conda activate tractoflow
+cd ~/TractoFlowProc
+nohup ./run_XTRACT.py --gpu ~/TractoFlow_workspace/FDT > nohup_xtract.out &
 ```
 
 ### PROBTRACKX
@@ -149,16 +149,16 @@ The run_PROBTACKX.py script runs 'probtrackx2' to generate a streamline distribu
 
 Seed names for each index value can be provided with a csv file of the same name with the suffix '.csv'. For example, the name file for the 'SeedROI.nii.gz' is 'SeedROI.csv'. The csv file must be located in the same directory as the mask image file.  
 
-A sample seed ROI image and its name file are provided as SeedROI.nii.gz and SeedROI.csv in this repository (i.e., ~/TractflowProc/). This file defines the centromedial amygdala (CMA), basolateral amygdala (BLA), superficial amygdala (SFA), and nucleus accumbens (NACC) regions bilaterally.  
+A sample seed ROI image and its name file are provided as SeedROI.nii.gz and SeedROI.csv in this repository (i.e., ~/TractoFlowProc/). This file defines the centromedial amygdala (CMA), basolateral amygdala (BLA), superficial amygdala (SFA), and nucleus accumbens (NACC) regions bilaterally.  
 
 #### Usage
 run_PROBTRACKX.py [-h] [--gpu] --seed_template SEED_TEMPLATE [--overwrite] FDT_folder  
 e.g,  
-To run the commands below, you need to prepare the SeedROI.nii.gz file in ~/TractFlow_workspace. The csv file containing the ROI names must be placed in the same directory as the mask image file.
+To run the commands below, you need to prepare the SeedROI.nii.gz file in ~/TractoFlow_workspace. The csv file containing the ROI names must be placed in the same directory as the mask image file.
 ```
-conda activate tractflow
-cd ~/TractFlowProc
-nohup ./run_PROBTACKX.py --gpu --seed_template ~/TractFlow_workspace/SeedROI.nii.gz ~/TractFlow_workspace/FDT > nohup_probtrackx.out &
+conda activate tractoflow
+cd ~/TractoFlowProc
+nohup ./run_PROBTACKX.py --gpu --seed_template ~/TractoFlow_workspace/SeedROI.nii.gz ~/TractoFlow_workspace/FDT > nohup_probtrackx.out &
 ```
 
 ## 6. Collecting result files into a single folder
@@ -168,12 +168,12 @@ The script collect_all_results.py copies all standardized result files to one pl
 usage: collect_all_results.py [-h] [--overwrite] workplace  
 e.g,  
 ```
-conda activate tractflow
-cd ~/TractFlowProc
-./collect_all_results.py ~/TractFlow_workspace
+conda activate tractoflow
+cd ~/TractoFlowProc
+./collect_all_results.py ~/TractoFlow_workspace
 ```
 
-The result files are stored in, for example, ~/TractFlow_workspace/All_results/*subject* folders.  
+The result files are stored in, for example, ~/TractoFlow_workspace/All_results/*subject* folders.  
 
 ## Results
 Each subject folder ([workplace]/all_results/[sub]) contains following files.
