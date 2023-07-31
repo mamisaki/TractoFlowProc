@@ -54,7 +54,7 @@ The files processed by FreeSurfer are stored in the folder ~/TractFlow_workspace
 The files aparc+aseg.nii.gz and wmparc.nii.gz of each subject are created in the input folder.
 
 ## 3. TractoFlow pipeline
-The run_TractFlow.pyscript runs the TractFlow pipeline.
+The script run_TractFlow.py runs the TractFlow pipeline.
 
 #### Usage
 run_TractFlow.py [-h] [--fully_reproducible] [--ABS] [--workplace WORKPLACE] [--num_proc NUM_PROC] [--processes PROCESSES] [--overwrite] input
