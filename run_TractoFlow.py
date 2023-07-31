@@ -65,7 +65,7 @@ if __name__ == '__main__':
     ABS = False
     workplace = None
     num_proc = 0
-    with_docker = False
+    with_docker = True
     processes = None
     overwrite = False
     '''
