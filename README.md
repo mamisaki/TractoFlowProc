@@ -182,7 +182,7 @@ The result files are stored in, for example, ~/TractoFlow_workspace/All_results/
 
 ## Results
 Each subject folder ([workplace]/all_results/[sub]) contains following files.
-- Freewater corrected DTI metrics  
+- Freewater corrected DTI metrics in the MNI space  
     \*\_fw_corr_fa_\* : fractional anisotropy  
     \*\_fw_corr_md_\* : mean diffusivity  
     \*\_fw_corr_rd_\* : radial diffusivity  
@@ -193,9 +193,9 @@ Each subject folder ([workplace]/all_results/[sub]) contains following files.
     \*\_FDT_xtract_stats.csv : XTRACT output statistics
 
 - PROBTRACKX  
-    \*\_[ROI_NAME]_fdt_paths_prob_standard.nii.gz : Probabilistic tractography map for the ROI seed.
+    \*\_[ROI_NAME]_fdt_paths_prob_standard.nii.gz : Probabilistic tractography map for the ROI seed in the MNI space.
 
-- Freewater uncorrected metrcts  
+- Freewater uncorrected metrics in the MNI space 
     DTI metrics : axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [[Batchelor et al., 2005](https://onlinelibrary.wiley.com/doi/10.1002/mrm.20334)], mean diffusivity (md), radial diffusivity (rd)
     
     FODF metrics : fiber orientation distribution function (fODF) metrics including the total and maximum Apparent Fiber Density (AFD) [[Raffelt et al., 2012](https://www.sciencedirect.com/science/article/abs/pii/S1053811911012092)], the Number of Fiber Orientation (NuFO) [[Dell’Acqua et al., 2013](https://onlinelibrary.wiley.com/doi/abs/10.1002/hbm.22080)] and principal fODFs orientations (up to 5 per voxel).
