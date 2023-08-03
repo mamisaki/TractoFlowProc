@@ -196,6 +196,6 @@ Each subject folder ([workplace]/all_results/[sub]) contains following files.
     \*\_[ROI_NAME]_fdt_paths_prob_standard.nii.gz : Probabilistic tractography map for the ROI seed.
 
 - Freewater uncorrected metrcts  
-    DTI metrics : axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [Batchelor et al., 2005], mean diffusivity (md), radial diffusivity (rd)
+    DTI metrics : axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [[Batchelor et al., 2005](https://onlinelibrary.wiley.com/doi/10.1002/mrm.20334)], mean diffusivity (md), radial diffusivity (rd)
     
     FODF metrics : fiber orientation distribution function (fODF) metrics including the total and maximum Apparent Fiber Density (AFD) [[Raffelt et al., 2012](https://www.sciencedirect.com/science/article/abs/pii/S1053811911012092)], the Number of Fiber Orientation (NuFO) [[Dell’Acqua et al., 2013](https://onlinelibrary.wiley.com/doi/abs/10.1002/hbm.22080)] and principal fODFs orientations (up to 5 per voxel).
