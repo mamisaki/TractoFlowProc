@@ -192,31 +192,31 @@ Each subject folder ([workplace]/all_results/[sub]) contains following files.
 - XTRACT  
     \*\_FDT_xtract_stats.csv : XTRACT output statistics.  
     The file includes the median, mean, and SD of DTI metrics (FA, MD, RD, AD, and GA) of each tract listed below.  
-    |Tract                               |Abbreviation|
-    |------------------------------------|------------|
-    |Arcuate Fasciculus                  |AF          |
-    |Acoustic Radiation                  |AR          |
-    |Anterior Thalamic Radiation         |ATR         |
-    |Cingulum subsection : Dorsal        |CBD         |
-    |Cingulum subsection : Peri-genual   |CBP         |
-    |Cingulum subsection : Temporal      |CBT         |
-    |Corticospinal Tract                 |CST         |
-    |Frontal Aslant                      |FA          |
-    |Forceps Major                       |FMA         |
-    |Forceps Minor                       |FMI         |
-    |Fornix                              |FX          |
-    |Inferior Longitudinal Fasciculus    |ILF         |
-    |Inferior Fronto-Occipital Fasciculus|IFO         |
-    |Middle Cerebellar Peduncle          |MCP         |
-    |Middle Longitudinal Fasciculuc      |MdLF        |
-    |Optic Radiation                     |OR          |
-    |Superior Thalamic Radiation         |STR         |
-    |Superior Longitudinal Fasciculus 1  |SLF1        |
-    |Superior Longitudinal Fasciculus 2  |SLF2        |
-    |Superior Longitudinal Fasciculus 3  |SLF3        |
-    |Anterior Commissure                 |AC          |
-    |Uncinate Fasciculus                 |UF          |
-    |Vertical Occipital Fasciculus       |VOF         |
+    |Tract                                     |Abbreviation|
+    |------------------------------------------|------------|
+    |Anterior Commissure                       |ac          |
+    |Arcuate Fasciculus (L/R)                  |af_l/r      |
+    |Acoustic Radiation (L/R)                  |ar_l/r      |
+    |Anterior Thalamic Radiation (L/R)         |atr_l/r     |
+    |Cingulum subsection : Dorsal (L/R)        |cbd_l/r     |
+    |Cingulum subsection : Peri-genual (L/R)   |cbp_l/r     |
+    |Cingulum subsection : Temporal (L/R)      |cbt_l/r     |
+    |Corticospinal Tract (L/R)                 |cst_l/r     |
+    |Frontal Aslant (L/R)                      |fa_l/r      |
+    |Forceps Major                             |fma         |
+    |Forceps Minor                             |fmi         |
+    |Fornix (L/R)                              |fx_l/r      |
+    |Inferior Longitudinal Fasciculus (L/R)    |ilf_l/r     |
+    |Inferior Fronto-Occipital Fasciculus (L/R)|ifo_l/r     |
+    |Middle Cerebellar Peduncle                |mcp         |
+    |Middle Longitudinal Fasciculuc (L/R)      |mdlf_l/r    |
+    |Optic Radiation (L/R)                     |or_l/r      |
+    |Superior Longitudinal Fasciculus 1 (L/R)  |slf1_l/r    |
+    |Superior Longitudinal Fasciculus 2 (L/R)  |slf2_l/r    |
+    |Superior Longitudinal Fasciculus 3 (L/R)  |slf3_l/r    |
+    |Superior Thalamic Radiation (L/R)         |str_l/r     |
+    |Uncinate Fasciculus (L/R)                 |uf_l/r      |
+    |Vertical Occipital Fasciculus (L/R)       |vof_l/r     |
   
 - PROBTRACKX  
     \*\_[ROI_NAME]_fdt_paths_prob_standard.nii.gz : Probabilistic tractography map for the ROI seed in the MNI space.
