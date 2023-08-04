@@ -191,7 +191,7 @@ Each subject folder ([workplace]/all_results/[sub]) contains following files.
 
 - XTRACT  
     \*\_FDT_xtract_stats.csv : XTRACT output statistics
-    The file includes the median, mean, and SD of DTI metrics (FA, MD, RD, AD, and GA) of each tract listed below.
+    The file includes the median, mean, and SD of DTI metrics (FA, MD, RD, AD, and GA) of each tract listed below.  
     |Tract                               |Abbreviation|
     |------------------------------------|------------|
     |Arcuate Fasciculus                  |AF          |
