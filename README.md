@@ -191,7 +191,33 @@ Each subject folder ([workplace]/all_results/[sub]) contains following files.
 
 - XTRACT  
     \*\_FDT_xtract_stats.csv : XTRACT output statistics
-
+    The file includes the median, mean, and SD of DTI metrics (FA, MD, RD, AD, and GA) of each tract listed below.
+    |Tract                               |Abbreviation|
+    |------------------------------------|------------|
+    |Arcuate Fasciculus                  |AF          |
+    |Acoustic Radiation                  |AR          |
+    |Anterior Thalamic Radiation         |ATR         |
+    |Cingulum subsection : Dorsal        |CBD         |
+    |Cingulum subsection : Peri-genual   |CBP         |
+    |Cingulum subsection : Temporal      |CBT         |
+    |Corticospinal Tract                 |CST         |
+    |Frontal Aslant                      |FA          |
+    |Forceps Major                       |FMA         |
+    |Forceps Minor                       |FMI         |
+    |Fornix                              |FX          |
+    |Inferior Longitudinal Fasciculus    |ILF         |
+    |Inferior Fronto-Occipital Fasciculus|IFO         |
+    |Middle Cerebellar Peduncle          |MCP         |
+    |Middle Longitudinal Fasciculuc      |MdLF        |
+    |Optic Radiation                     |OR          |
+    |Superior Thalamic Radiation         |STR         |
+    |Superior Longitudinal Fasciculus 1  |SLF1        |
+    |Superior Longitudinal Fasciculus 2  |SLF2        |
+    |Superior Longitudinal Fasciculus 3  |SLF3        |
+    |Anterior Commissure                 |AC          |
+    |Uncinate Fasciculus                 |UF          |
+    |Vertical Occipital Fasciculus       |VOF         |
+  
 - PROBTRACKX  
     \*\_[ROI_NAME]_fdt_paths_prob_standard.nii.gz : Probabilistic tractography map for the ROI seed in the MNI space.
 
