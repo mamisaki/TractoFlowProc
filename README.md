@@ -57,8 +57,8 @@ The files aparc+aseg.nii.gz and wmparc.nii.gz of each subject are created in the
 ## 3. TractoFlow pipeline
 The run_TractoFlow.pyscript runs the TractoFlow pipeline.
 =======
-## 3. TractFlow pipeline
-The script run_TractFlow.py runs the TractFlow pipeline.
+## 3. TractoFlow pipeline
+The script run_TractoFlow.py runs the TractoFlow pipeline.
 >>>>>>> ec31b0980e4d226243332a7350468715d92994aa
 
 #### Usage
