@@ -53,13 +53,8 @@ The files processed by FreeSurfer are stored in the folder ~/TractoFlow_workspac
 
 The files aparc+aseg.nii.gz and wmparc.nii.gz of each subject are created in the input folder.
 
-<<<<<<< HEAD
-## 3. TractoFlow pipeline
-The run_TractoFlow.pyscript runs the TractoFlow pipeline.
-=======
-## 3. TractoFlow pipeline
-The script run_TractoFlow.py runs the TractoFlow pipeline.
->>>>>>> ec31b0980e4d226243332a7350468715d92994aa
+## 3. TractFlow pipeline
+The script run_TractFlow.py runs the TractFlow pipeline.
 
 #### Usage
 run_TractoFlow.py [-h] [--fully_reproducible] [--ABS] [--workplace WORKPLACE] [--num_proc NUM_PROC] [--processes PROCESSES] [--overwrite] input
@@ -182,7 +177,7 @@ The result files are stored in, for example, ~/TractoFlow_workspace/All_results/
 
 ## Results
 Each subject folder ([workplace]/all_results/[sub]) contains following files.
-- Freewater corrected DTI metrics  
+- Freewater corrected DTI metrics in the MNI space  
     \*\_fw_corr_fa_\* : fractional anisotropy  
     \*\_fw_corr_md_\* : mean diffusivity  
     \*\_fw_corr_rd_\* : radial diffusivity  
@@ -190,12 +185,38 @@ Each subject folder ([workplace]/all_results/[sub]) contains following files.
     \*\_fw_corr_ga_\* : geodesic anisotropy [[Batchelor et al., 2005](https://onlinelibrary.wiley.com/doi/10.1002/mrm.20334)]
 
 - XTRACT  
-    \*\_FDT_xtract_stats.csv : XTRACT output statistics
-
+    \*\_FDT_xtract_stats.csv : XTRACT output statistics.  
+    The file includes the median, mean, and SD of DTI metrics (FA, MD, RD, AD, and GA) of each tract listed below.  
+    |Tract                                     |Abbreviation|
+    |------------------------------------------|------------|
+    |Anterior Commissure                       |ac          |
+    |Arcuate Fasciculus (L/R)                  |af_l/r      |
+    |Acoustic Radiation (L/R)                  |ar_l/r      |
+    |Anterior Thalamic Radiation (L/R)         |atr_l/r     |
+    |Cingulum subsection : Dorsal (L/R)        |cbd_l/r     |
+    |Cingulum subsection : Peri-genual (L/R)   |cbp_l/r     |
+    |Cingulum subsection : Temporal (L/R)      |cbt_l/r     |
+    |Corticospinal Tract (L/R)                 |cst_l/r     |
+    |Frontal Aslant (L/R)                      |fa_l/r      |
+    |Forceps Major                             |fma         |
+    |Forceps Minor                             |fmi         |
+    |Fornix (L/R)                              |fx_l/r      |
+    |Inferior Longitudinal Fasciculus (L/R)    |ilf_l/r     |
+    |Inferior Fronto-Occipital Fasciculus (L/R)|ifo_l/r     |
+    |Middle Cerebellar Peduncle                |mcp         |
+    |Middle Longitudinal Fasciculuc (L/R)      |mdlf_l/r    |
+    |Optic Radiation (L/R)                     |or_l/r      |
+    |Superior Longitudinal Fasciculus 1 (L/R)  |slf1_l/r    |
+    |Superior Longitudinal Fasciculus 2 (L/R)  |slf2_l/r    |
+    |Superior Longitudinal Fasciculus 3 (L/R)  |slf3_l/r    |
+    |Superior Thalamic Radiation (L/R)         |str_l/r     |
+    |Uncinate Fasciculus (L/R)                 |uf_l/r      |
+    |Vertical Occipital Fasciculus (L/R)       |vof_l/r     |
+  
 - PROBTRACKX  
-    \*\_[ROI_NAME]_fdt_paths_prob_standard.nii.gz : Probabilistic tractography map for the ROI seed.
+    \*\_[ROI_NAME]_fdt_paths_prob_standard.nii.gz : Probabilistic tractography map for the ROI seed in the MNI space.
 
-- Freewater uncorrected metrcts  
-    DTI metrics : axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [Batchelor et al., 2005], mean diffusivity (md), radial diffusivity (rd)
+- Freewater uncorrected metrics in the MNI space  
+    DTI metrics : axial diffusivity (ad), fractional anisotropy (fa), geodesic anisotropy (ga) [[Batchelor et al., 2005](https://onlinelibrary.wiley.com/doi/10.1002/mrm.20334)], mean diffusivity (md), radial diffusivity (rd)
     
-    FODF metrics : fiber orientation distribution function (fODF) metrics including the total and maximum Apparent Fiber Density (AFD) [Raffelt et al., 2012], the Number of Fiber Orientation (NuFO) [Dell’Acqua et al., 2013] and principal fODFs orientations (up to 5 per voxel).
+    FODF metrics : fiber orientation distribution function (fODF) metrics including the total and maximum Apparent Fiber Density (AFD) [[Raffelt et al., 2012](https://www.sciencedirect.com/science/article/abs/pii/S1053811911012092)], the Number of Fiber Orientation (NuFO) [[Dell’Acqua et al., 2013](https://onlinelibrary.wiley.com/doi/abs/10.1002/hbm.22080)] and principal fODFs orientations (up to 5 per voxel).
