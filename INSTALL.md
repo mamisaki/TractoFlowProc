@@ -19,6 +19,7 @@ https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instru
 ## Install FSL
 https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation  
 
+
 ## Download scilpy git repositories
 ```
 cd
@@ -27,7 +28,7 @@ git clone https://github.com/scilus/scilpy.git
 
 ## Create tractoflow conda environment
 ```
-conda create -n tractoflow python=3.10 pip hdf5=1.12 cython psutil mkl pyyaml scikit-image seaborn singularity toml tornado typing-extensions -c anaconda -c conda-forge
+conda create -n tractoflow python=3.10 pip hdf5=1.12 cython psutil mkl pyyaml scikit-image seaborn conda-forge::singularity toml tornado typing-extensions -c anaconda -c conda-forge
 conda activate tractoflow
 cd ~/scilpy
 pip install antspyx smriprep niworkflows fmriprep
@@ -65,8 +66,18 @@ sudo apt install connectome-workbench
 ```
 cd
 git clone https://github.com/mamisaki/TractoFlowProc
+```
+
+Isntall container
+```
 cd TractoFlowProc
 docker pull scilus/scilus:1.5.0
-sudo singularity build scilus_1.5.0.sif docker://scilus/scilus:1.5.0
+singularity build scilus_1.5.0.sif docker://scilus/scilus:1.5.0
+```
+
+or
+
+```
 wget https://scil.usherbrooke.ca/containers/scilus_1.5.0.sif
 ```
+* Singurality contained build by different Singurality version may not work. if "ERROR  : Unknown image format/type' happens, you may need to rebuid the container.

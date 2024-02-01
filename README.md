@@ -62,8 +62,9 @@ e.g,
 ```
 conda activate tractoflow
 cd ~/TractoFlowProc
-nohup ./run_TractoFlow.py ~/TractoFlow_workspace/input --with_docker --fully_reproducible > nohup_tf.out &
+nohup ./run_TractoFlow.py ~/TractoFlow_workspace/input --fully_reproducible > nohup_tf.out &
 ```
+* Add '--with_docker' unless singurality is installed.
 * Add '--ABS' option to run TractoFlow-ABS (See [2](#2-run-freesurfer-optional)). 
 
 The command returns immediately and the process runs in the background.  
