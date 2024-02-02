@@ -7,6 +7,7 @@ https://tractoflow-documentation.readthedocs.io/en/latest/index.html
 
 # %% import ===================================================================
 import argparse
+import os
 from pathlib import Path
 import shlex
 import subprocess
@@ -43,6 +44,7 @@ if __name__ == '__main__':
                         help='with docker')
     parser.add_argument('--processes', help='The number of parallel processes'
                         ' to launch.')
+    parser.add_argument('--tempdir', help='Singurality tmp dir')
     parser.add_argument('--overwrite', action='store_true', help='Overwrite')
 
     args = parser.parse_args()
@@ -55,6 +57,7 @@ if __name__ == '__main__':
     num_proc = args.num_proc
     with_docker = args.with_docker
     processes = args.processes
+    tmpdir = args.tempdir
     overwrite = args.overwrite
 
     ''' DEBUG
@@ -194,8 +197,14 @@ if __name__ == '__main__':
             cmd += f' -with-singularity {sif_file}'
         cmd += ' -resume'
 
+        if tmpdir is not None:
+            env = os.environ.copy()
+            env["SINGULARITY_TMPDIR"] = tmpdir
+        else:
+            env = None
+
         try:
-            subprocess.check_call(shlex.split(cmd), cwd=workplace)
+            subprocess.check_call(shlex.split(cmd), cwd=workplace, env=env)
         except Exception:
             print(f"Failed to run {cmd}")
             sys.exit()
