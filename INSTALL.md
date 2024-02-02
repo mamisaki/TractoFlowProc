@@ -74,10 +74,4 @@ cd TractoFlowProc
 docker pull scilus/scilus:1.5.0
 singularity build scilus_1.5.0.sif docker://scilus/scilus:1.5.0
 ```
-
-or
-
-```
-wget https://scil.usherbrooke.ca/containers/scilus_1.5.0.sif
-```
-* Singurality contained build by different Singurality version may not work. if "ERROR  : Unknown image format/type' happens, you may need to rebuid the container.
+* Singurality container build by different Singurality version may not work. if "ERROR  : Unknown image format/type' happens, you need to rebuid the container.
