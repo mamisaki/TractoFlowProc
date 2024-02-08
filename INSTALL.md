@@ -24,6 +24,8 @@ https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation
 ```
 cd
 git clone https://github.com/scilus/scilpy.git
+cd scilpy
+git checkout 1.6.0
 ```
 
 ## Create tractoflow conda environment
@@ -32,6 +34,7 @@ conda create -n tractoflow python=3.10 pip hdf5=1.12 cython psutil mkl pyyaml sc
 conda activate tractoflow
 cd ~/scilpy
 pip install antspyx smriprep niworkflows fmriprep
+pip install -e .
 ```
 
 ## Download nextflow

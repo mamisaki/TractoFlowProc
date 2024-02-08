@@ -136,7 +136,7 @@ if __name__ == '__main__':
         sub_dirs = sub_dirs[:num_proc]
 
         # Put IsRun
-        IsRun = wd0 / f'IsRun_FWF_{gethostname()}'
+        IsRun = wd0 / f'IsRun_TrF_{gethostname()}'
         run_subjs = [d.name for d in sub_dirs]
         with open(IsRun, 'w') as fd:
             print(','.join(run_subjs), file=fd)
@@ -192,7 +192,7 @@ if __name__ == '__main__':
 
         if with_docker:
             # cmd += ' -with-docker scilus/scilus:1.4.2'
-            cmd += ' -with-docker scilus/scilus:1.5.0'
+            cmd += ' -with-docker scilus/scilus:1.6.0'
         else:
             cmd += f' -with-singularity {sif_file}'
         cmd += ' -resume'
