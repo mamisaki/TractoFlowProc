@@ -173,7 +173,7 @@ conda activate tractoflow
 cd ~/TractoFlowProc
 ```
 ```
-nohup ./run_PROBTACKX.py --gpu --seed_template ~/TractoFlow_workspace/SeedROI.nii.gz ~/TractoFlow_workspace/FDT > nohup_probtrackx.out &
+nohup ./run_PROBTRACKX.py --gpu --seed_template ~/TractoFlow_workspace/SeedROI.nii.gz ~/TractoFlow_workspace/FDT > nohup_probtrackx.out &
 ```
 
 ## 6. Collecting result files into a single folder
