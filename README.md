@@ -190,7 +190,7 @@ cd ~/TractoFlowProc
 ./collect_all_results.py ~/TractoFlow_workspace
 ```
 
-The result files are stored in, for example, ~/TractoFlow_workspace/All_results/*subject* folders.  
+The result files are stored in, for example, ~/TractoFlow_workspace/all_results/*subject* folders.  
 
 ## Results
 Each subject folder ([workplace]/all_results/[sub]) contains following files.
