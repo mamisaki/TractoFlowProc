@@ -101,7 +101,7 @@ The script will skip subjects with a 'FW_Corrected_Metrics/*__fw_corr_tensor.nii
 
 The result files are saved in the 'FW_Corrected_Metrics' folder in the results/*subject* folder.  
 
-## 5. Standardize DTI and fODF metrics
+## 5. Spatial normalization for DTI and fODF metrics
 The run_warp2template.py script normalizes the DTI and fDOF metric files to the MNI152 template space.  
 
 #### Usage
