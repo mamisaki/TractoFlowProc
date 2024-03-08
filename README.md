@@ -44,6 +44,8 @@ run_FreeSurfer.py [-h] [--overwrite] input_folder
 e.g,  
 ```
 cd ~/TractoFlowProc
+```
+```
 nohup ./run_FreeSurfer.py ~/TractoFlow_workspace/input > nohup_FS.out &
 ```
 The script will skip subjects with 'aparc+aseg.mgz' and 'wmparc.nii.gz' files unless the --overwrite option is set.  
@@ -62,6 +64,8 @@ e.g,
 ```
 conda activate tractoflow
 cd ~/TractoFlowProc
+```
+```
 nohup ./run_TractoFlow.py ~/TractoFlow_workspace/input --fully_reproducible > nohup_tf.out &
 ```
 * Add '--with_docker' unless singurality is installed.
@@ -86,6 +90,8 @@ e.g.,
 ```
 conda activate tractoflow
 cd ~/TractoFlowProc
+```
+```
 nohup ./run_FreewaterFlow.py ~/TractoFlow_workspace/results > nohup_fwf.out &
 ```
 The command returns immediately and the process runs in the background.  
@@ -95,7 +101,7 @@ The script will skip subjects with a 'FW_Corrected_Metrics/*__fw_corr_tensor.nii
 
 The result files are saved in the 'FW_Corrected_Metrics' folder in the results/*subject* folder.  
 
-## 5. Standardize DTI and fODF metrics
+## 5. Spatial normalization for DTI and fODF metrics
 The run_warp2template.py script normalizes the DTI and fDOF metric files to the MNI152 template space.  
 
 #### Usage
@@ -104,6 +110,8 @@ e.g,
 ```
 conda activate tractoflow
 cd ~/TractoFlowProc
+```
+```
 nohup ./run_warp2template.py ~/TractoFlow_workspace/results > nohup_wrp.out &
 ```
 
@@ -123,6 +131,8 @@ e.g,
 ```
 conda activate tractoflow
 cd ~/TractoFlowProc
+```
+```
 nohup ./run_bedpostX.py --gpu ~/TractoFlow_workspace/results > nohup_bpx.out &
 ```
 The results will be stored in '~/TractoFlow_workspace/FDT/*subject*.bedpostX' folder.  
@@ -140,6 +150,8 @@ e.g,
 ```
 conda activate tractoflow
 cd ~/TractoFlowProc
+```
+```
 nohup ./run_XTRACT.py --gpu ~/TractoFlow_workspace/FDT > nohup_xtract.out &
 ```
 
@@ -159,7 +171,9 @@ To run the commands below, you need to prepare the SeedROI.nii.gz file in ~/Trac
 ```
 conda activate tractoflow
 cd ~/TractoFlowProc
-nohup ./run_PROBTACKX.py --gpu --seed_template ~/TractoFlow_workspace/SeedROI.nii.gz ~/TractoFlow_workspace/FDT > nohup_probtrackx.out &
+```
+```
+nohup ./run_PROBTRACKX.py --gpu --seed_template ~/TractoFlow_workspace/SeedROI.nii.gz ~/TractoFlow_workspace/FDT > nohup_probtrackx.out &
 ```
 
 ## 6. Collecting result files into a single folder
@@ -171,10 +185,12 @@ e.g,
 ```
 conda activate tractoflow
 cd ~/TractoFlowProc
+```
+```
 ./collect_all_results.py ~/TractoFlow_workspace
 ```
 
-The result files are stored in, for example, ~/TractoFlow_workspace/All_results/*subject* folders.  
+The result files are stored in, for example, ~/TractoFlow_workspace/all_results/*subject* folders.  
 
 ## Results
 Each subject folder ([workplace]/all_results/[sub]) contains following files.
