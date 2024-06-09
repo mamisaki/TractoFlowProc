@@ -56,6 +56,7 @@ if __name__ == '__main__':
         sub = sub_dir.name.replace('.bedpostX', '')
         res_dir = FDT_folder / f"{sub}.xtract"
         last_f = res_dir / 'tracts' / 'vof_r' / 'densityNorm.nii.gz'
+        last_f = res_dir / 'stats.csv'
         IsRun = FDT_folder / f'IsRunning_XTRACT_{sub}'
         if last_f.is_file() and not overwrite:
             done_subj.append(sub_dir)
@@ -123,4 +124,3 @@ if __name__ == '__main__':
 
     if len(Cmds):
         run_multi_shell(Cmds, JobNames)
-
